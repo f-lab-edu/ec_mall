@@ -3,4 +3,4 @@
 
 [Wiki](https://github.com/f-lab-edu/ec_mall/wiki)
 
-melong
+melong!
