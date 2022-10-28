@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ec_mall.mapper.MemberMapper">
+    <insert id="regMember" parameterType="com.example.ec_mall.dto.MemberDTO" >
+        insert into account
+        (
+                 account_id,
+                 email,
+                 nickname,
+                 password,
+                 created_date;
+        ) values
+        (
+                  #{account_id},
+                  #{email},
+                  #{nickname},
+                  #{password},
+                  #{created_date}
+        )
+    </insert>
+</mapper>
