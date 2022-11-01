@@ -4,18 +4,28 @@
     <insert id="regMember" parameterType="com.example.ec_mall.dto.MemberDTO" >
         insert into account
         (
-                 account_id,
-                 email,
-                 nickname,
-                 password,
-                 created_date;
+                account_id,
+                email,
+                nickname,
+                password,
+                created_by,
+                created_date,
+                updated_by,
+                updated_date
         ) values
         (
-                  #{account_id},
-                  #{email},
-                  #{nickname},
-                  #{password},
-                  #{created_date}
+                #{id},
+                #{email},
+                #{nickName},
+                #{password},
+                #{createdBy},
+                #{createdDate},
+                #{updatedBy},
+                #{updatedDate}
         )
     </insert>
+
+    <select id = "emailCheck" resultType="int">
+        select count(email) from account where email = #{email}
+    </select>
 </mapper>

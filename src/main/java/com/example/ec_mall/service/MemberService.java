@@ -23,13 +23,15 @@ public class MemberService {
 
         int regCount = memberMapper.regMember(memberDTO);
 
+        //System.out.println(regCount);
+
         if(regCount != 1){
-            System.out.println("registration ERROR! { "+ memberDTO +" }");
-            throw new RuntimeException("회원가입 메소드 확인\n" + memberDTO);
+            System.out.println("registration ERROR! { "+ memberDTO.getNickName() +" }");
+            throw new RuntimeException("회원가입 메소드 확인\n" + memberDTO.getNickName());
         }
     }
 
     public boolean isDuplicatedEmail(String email){
-        return memberMapper.idCheck(email) == 1;
+        return memberMapper.emailCheck(email) == 1;
     }
 }

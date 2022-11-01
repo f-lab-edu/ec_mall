@@ -3,9 +3,7 @@ package com.example.ec_mall.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,15 +18,19 @@ public class MemberDTO {
     private Long id;
 
     @Email
-    @NotBlank
+    @NotBlank(message = "E-mail을 입력하세요.")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "최대 10자로 생성하세요.")
     private String nickName;
 
-    @NotBlank
+    @NotBlank(message = "8 ~ 16자로 생성하세요. 대소문자, 특수문자, 숫자를 포함하여야 합니다.")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[A-Za-z])(?=.*\\W)(?=\\S+$).{8,16}")
     private String password;
+
+    private String createdBy;
     private LocalDateTime createdDate;
+    private String updatedBy;
     private LocalDateTime updatedDate;
 
 }
