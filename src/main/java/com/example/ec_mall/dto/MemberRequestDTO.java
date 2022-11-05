@@ -8,13 +8,14 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class MemberDTO {
+public class MemberRequestDTO {
 
     /**
      * @NotNull : null 허용하지 않음.
-     * @NotBlank : null 허용하지 않으면서, 공백문자가 아닌 문자가 한개 이상 포함되어야 함.
+     * @NotBlank : null 허용하지 않으면서, 공백문자가 아닌 문자가 한개 이상 포함되어야 함.(null, "", " " 모두 허용하지 않음)
+     * @NotEmpty : null과 "" 허용하지 않지만, " "와 같이 공백문자는 허용된다.
      */
-    @NotNull
+
     private Long id;
 
     @Email

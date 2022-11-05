@@ -1,30 +1,30 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dto.MemberDTO;
+import com.example.ec_mall.dto.MemberRequestDTO;
 import com.example.ec_mall.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+   @RestController
+    -> @Controller + @ResponseBody
+   @Controller의 역할을 Model객체를 만들어 데이터를 담고 View를 찾는다.
+
+   @RestController는 단순히 객체만을 반환하고 객체 데이터는 JSON 또는 XML 형식으로 HTTP응답에 담아서 전송.
+ */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "member", method= RequestMethod.POST, consumes = "application/json")
+@RequestMapping(value = "member",  consumes = "application/json")
 public class MemberController {
 
     private final MemberService memberService;
-/*
-    @GetMapping("/regMember")
-    public String regMember(Model model){
-        model.addAttribute("title", "회원가입");
 
-        return "/";
-    }
-*/
     @PostMapping("signUp")
-    public String regMember(@RequestBody @Valid MemberDTO memberDTO){
+    public String signUpMember(@RequestBody @Valid MemberRequestDTO memberRequestDTO){
 
-        memberService.regMember(memberDTO);
+        memberService.signUpMember(memberRequestDTO);
         return "redirect:/";
 
     }

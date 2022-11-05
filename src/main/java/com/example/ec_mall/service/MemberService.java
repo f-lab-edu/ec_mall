@@ -1,6 +1,6 @@
 package com.example.ec_mall.service;
 
-import com.example.ec_mall.dto.MemberDTO;
+import com.example.ec_mall.dto.MemberRequestDTO;
 import com.example.ec_mall.error.DuplicateEmailException;
 import com.example.ec_mall.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,25 +13,25 @@ public class MemberService {
 
     private final MemberMapper memberMapper;
 
-    public void regMember(MemberDTO memberDTO){
+    public void signUpMember(MemberRequestDTO memberRequestDTO){
 
         //email 중복체크
-        boolean dupCheckEmail = isDuplicatedEmail(memberDTO.getEmail());
+        boolean dupCheckEmail = isDuplicatedEmail(memberRequestDTO.getEmail());
         if(dupCheckEmail){
-            throw new DuplicateEmailException("중복된 Email입니다." + memberDTO.getEmail());
+            throw new DuplicateEmailException("중복된 Email입니다." + memberRequestDTO.getEmail());
         }
 
-        int regCount = memberMapper.regMember(memberDTO);
+        int signUpCount = memberMapper.signUpMember(memberRequestDTO);
 
-        //System.out.println(regCount);
+        System.out.println(signUpCount);
 
-        if(regCount != 1){
-            System.out.println("registration ERROR! { "+ memberDTO.getNickName() +" }");
-            throw new RuntimeException("회원가입 메소드 확인\n" + memberDTO.getNickName());
+        if(signUpCount != 1){
+            System.out.println("registration ERROR! { "+ memberRequestDTO.getNickName() +" }");
+            throw new RuntimeException("회원가입 메소드 확인\n" + memberRequestDTO.getNickName());
         }
     }
 
-    public boolean isDuplicatedEmail(String email){
+    private boolean isDuplicatedEmail(String email){
         return memberMapper.emailCheck(email) == 1;
     }
 }
