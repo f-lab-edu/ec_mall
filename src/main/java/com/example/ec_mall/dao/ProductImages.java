@@ -1,12 +1,15 @@
-package com.example.ec_mall.dto;
+package com.example.ec_mall.dao;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class ProductImagesDTO {
+@Builder
+public class ProductImages {
     private long productImagesId;       // 상품 이미지 ID
     private long productId;             // 상품 ID
     private String imagesUrl;           // 상품 이미지 URL

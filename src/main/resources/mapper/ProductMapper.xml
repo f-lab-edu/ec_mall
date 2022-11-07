@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ec_mall.mapper.ProductMapper">
-    <insert id="addProduct" parameterType="com.example.ec_mall.dto.ProductDTO" useGeneratedKeys="true" keyProperty="productId" >
+    <insert id="addProduct" parameterType="com.example.ec_mall.dao.Product" useGeneratedKeys="true" keyProperty="productId" >
         insert into product (name, price, size, stock, info, created_by, created_date, updated_by, updated_date)
-        values (#{name}, #{price}, #{size}, #{stock}, #{info}, #{createdBy}, #{createdDate}, #{updatedBy}, #{updatedDate})
+        values (#{name}, #{price}, #{size}, #{stock}, #{info}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <insert id="addProductImages" parameterType="com.example.ec_mall.dto.ProductImagesDTO" useGeneratedKeys="true" keyProperty="productImagesId" >
+    <insert id="addProductImages">
         insert into product_images (product_id, images_url, created_by, created_date, updated_by, updated_date)
-        values (#{productId}, #{imagesUrl}, #{createdBy}, #{createdDate}, #{updatedBy}, #{updatedDate})
+        values (#{productId}, #{imagesUrl}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <insert id="addProductCategory" parameterType="com.example.ec_mall.dto.ProductCategoryDTO" useGeneratedKeys="true" keyProperty="productCategoryId" >
+    <insert id="addProductCategory">
         insert into product_category (product_id, category_id, created_by, created_date, updated_by, updated_date)
-        values (#{productId}, #{categoryId}, #{createdBy}, #{createdDate}, #{updatedBy}, #{updatedDate})
+        values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <select id="product" resultType="com.example.ec_mall.dto.ProductDTO">
+    <select id="product" resultType="com.example.ec_mall.dao.Product">
         SELECT * FROM product;
     </select>
 </mapper>

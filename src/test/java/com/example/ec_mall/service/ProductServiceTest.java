@@ -1,7 +1,11 @@
 package com.example.ec_mall.service;
 
-import com.example.ec_mall.dto.ProductDTO;
-import com.example.ec_mall.dto.ProductFormDTO;
+import com.example.ec_mall.dao.Product;
+import com.example.ec_mall.dao.ProductCategory;
+import com.example.ec_mall.dao.ProductImages;
+import com.example.ec_mall.dto.ProductRequestDTO;
+import com.example.ec_mall.dto.enums.categoryEnum;
+import com.example.ec_mall.dto.enums.sizeEnum;
 import com.example.ec_mall.mapper.ProductMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,35 +19,37 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductServiceTest {
+class ProductServiceTest {
     @Mock
     private ProductMapper productMapper;
 
     @InjectMocks
     private ProductService productService;
-    private ProductFormDTO productFormDTO;
+    private ProductRequestDTO productRequestDTO;
 
     @BeforeEach
-    public void add() {
-        productFormDTO = ProductFormDTO.builder()
+    void init() {
+        productRequestDTO = ProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
-                .size("L")
+                .size(sizeEnum.s)
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory("상의")
+                .bigCategory(categoryEnum.상의)
                 .smallCategory("반팔")
                 .build();
     }
 
     @Test
     @DisplayName("상품 등록 성공")
-    public void addProductOK() throws Exception {
-        productService.addProduct(productFormDTO);
+    void addProductSuccess(){
+        productService.addProduct(productRequestDTO);
+        productService.addProductCategory(productRequestDTO);
+        productService.addProductImages(productRequestDTO);
 
-        verify(productMapper).addProduct(any(ProductDTO.class));
-        verify(productMapper).addProductImages(any(ProductDTO.class));
-        verify(productMapper).addProductCategory(any(ProductDTO.class));
+        verify(productMapper).addProduct(any(Product.class));
+        verify(productMapper).addProductCategory(any(ProductCategory.class));
+        verify(productMapper).addProductImages(any(ProductImages.class));
     }
 }
