@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ec_mall.mapper.MemberMapper">
-    <insert id="signUpMember" parameterType="com.example.ec_mall.dto.MemberRequestDTO" >
+    <insert id="signUpMember" parameterType="com.example.ec_mall.dao.MemberDao" useGeneratedKeys="true" keyProperty="id" >
         insert into account
         (
-                account_id,
                 email,
                 nickname,
                 password,
@@ -14,14 +13,13 @@
                 updated_date
         ) values
         (
-                #{id},
                 #{email},
                 #{nickName},
                 #{password},
                 #{createdBy},
-                #{createdDate},
+                now(),
                 #{updatedBy},
-                #{updatedDate}
+                now()
         )
     </insert>
 

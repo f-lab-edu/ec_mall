@@ -1,22 +1,24 @@
 package com.example.ec_mall.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 public class MemberRequestDTO {
 
     /**
      * @NotNull : null 허용하지 않음.
      * @NotBlank : null 허용하지 않으면서, 공백문자가 아닌 문자가 한개 이상 포함되어야 함.(null, "", " " 모두 허용하지 않음)
      * @NotEmpty : null과 "" 허용하지 않지만, " "와 같이 공백문자는 허용된다.
+     * @Email : Email 형식 검증(Null을 허용하기 때문에 @NotNull과 같은 어노테이션과 같이 사용), @ 표시가 있는지만 검증하므로 특수문자등의 제한을 두려면 Pattern을 사용해 정규식으로 표현하는게 좋다.
+     *          특히나 이 프로젝트에선 Email을 아이디로 사용하기 때문에 더욱 정규식을 써야한다.
      */
 
-    private Long id;
 
     @Email
     @NotBlank(message = "E-mail을 입력하세요.")
@@ -28,10 +30,5 @@ public class MemberRequestDTO {
     @NotBlank(message = "8 ~ 16자로 생성하세요. 대소문자, 특수문자, 숫자를 포함하여야 합니다.")
     @Pattern(regexp = "(?=.*[0-9])(?=.*[A-Za-z])(?=.*\\W)(?=\\S+$).{8,16}")
     private String password;
-
-    private String createdBy;
-    private LocalDateTime createdDate;
-    private String updatedBy;
-    private LocalDateTime updatedDate;
 
 }
