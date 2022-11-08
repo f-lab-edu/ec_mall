@@ -1,8 +1,8 @@
 package com.example.ec_mall.service;
 
-import com.example.ec_mall.dao.Product;
-import com.example.ec_mall.dao.ProductCategory;
-import com.example.ec_mall.dao.ProductImages;
+import com.example.ec_mall.dao.ProductDao;
+import com.example.ec_mall.dao.ProductCategoryDao;
+import com.example.ec_mall.dao.ProductImagesDao;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
     private final ProductMapper productMapper;
     public void addProduct(ProductRequestDTO productRequestDTO){
-        Product product = Product.builder()
+        ProductDao product = ProductDao.builder()
                 .name(productRequestDTO.getName())
                 .price(productRequestDTO.getPrice())
                 .size(productRequestDTO.getSize().toString())
@@ -26,17 +26,15 @@ public class ProductService {
                 .build();
 
         productMapper.addProduct(product);
-    }
-    public void addProductCategory(ProductRequestDTO productRequestDTO){
-        ProductCategory productCategory = ProductCategory.builder()
+
+        ProductCategoryDao productCategory = ProductCategoryDao.builder()
                 .createdBy("admin")
                 .updatedBy("admin")
                 .build();
 
         productMapper.addProductCategory(productCategory);
-    }
-    public void addProductImages(ProductRequestDTO productRequestDTO){
-        ProductImages productImages = ProductImages.builder()
+
+        ProductImagesDao productImages = ProductImagesDao.builder()
                 .imagesUrl(productRequestDTO.getImagesUrl())
                 .createdBy("admin")
                 .createdBy("admin")

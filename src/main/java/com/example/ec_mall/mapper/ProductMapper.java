@@ -1,15 +1,15 @@
 package com.example.ec_mall.mapper;
 
-import com.example.ec_mall.dao.Product;
-import com.example.ec_mall.dao.ProductCategory;
-import com.example.ec_mall.dao.ProductImages;
+import com.example.ec_mall.dao.ProductDao;
+import com.example.ec_mall.dao.ProductCategoryDao;
+import com.example.ec_mall.dao.ProductImagesDao;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
 public interface ProductMapper {
-    void addProduct(Product product);
-    void addProductCategory(ProductCategory productCategory);
-    void addProductImages(ProductImages productImages);
-    List<Product> product();
+    void addProduct(ProductDao product);
+    void addProductCategory(ProductCategoryDao productCategory);
+    void addProductImages(ProductImagesDao productImages);
+    List<ProductDao> product();
 }

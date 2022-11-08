@@ -4,12 +4,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Product {
+public class ProductDao {
     private long productId;             // 상품ID
     private String name;                // 상품명
     private int price;                  // 상품 가격
