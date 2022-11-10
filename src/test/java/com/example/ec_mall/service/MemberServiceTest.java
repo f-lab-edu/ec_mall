@@ -1,63 +1,59 @@
 package com.example.ec_mall.service;
 
-import com.example.ec_mall.dto.MemberDTO;
+import com.example.ec_mall.dto.MemberRequestDTO;
 import com.example.ec_mall.mapper.MemberMapper;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
+import com.example.ec_mall.util.SHA256;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 
-
-import java.time.LocalDateTime;
-
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class MemberServiceTest {
 
     @InjectMocks
     MemberService memberService;
+    MemberRequestDTO memberRequestDTO;
 
     @Mock
     MemberMapper memberMapper;
 
-
-    public MemberDTO addMember() {
-        MemberDTO member = new MemberDTO();
-
-        member.setId(1L);
-        member.setNickName("Test");
-        member.setEmail("test@test.com");
-        member.setPassword("1234");
-        member.setCreatedDate(LocalDateTime.now());
-
-        return member;
+    @BeforeEach
+    void setUp(){
+        memberRequestDTO = MemberRequestDTO.builder()
+                .email("est@test.com")
+                .nickName("test")
+                .password(SHA256.encrypt("asdf"))
+                .build();
     }
 
     @Test
-    public void addMember_성공(){
-        MemberDTO member = addMember();
-        given(memberMapper.regMember(member)).willReturn(1);
-        memberService.regMember(member);
+    @DisplayName("SHA256 암호화 테스트")
+    void passwordEqual(){
+        assertThat(memberRequestDTO.getPassword()).isEqualTo("f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b");
     }
 
+
+    /**
+     * when() = 원하는 값을 리턴하는 기능을 제공하는 메소드(Mock이 감싸고 있는 메소드가 호출되었을 때, Mock 객체의 메소드를 호출할 때 사용.
+     * verify().method() = 원하는 메소드가 특정 조건으로 실행되었는지 검증.
+     */
     @Test
-    public void addMember_실패(){
-        MemberDTO member = addMember();
-        given(memberMapper.regMember(member)).willReturn(0);
-        memberService.regMember(member);
+    @DisplayName("회원가입 실패 : 중복된 이메일")
+    void signUpTestSuccess(){
+        when(memberMapper.emailCheck(memberRequestDTO.getEmail())).thenReturn(1);
+        memberService.signUpMember(memberRequestDTO);
+
+        verify(memberMapper, atLeastOnce()).emailCheck(memberRequestDTO.getEmail());
     }
 
-    @Test
-    public void addMember_EmailCheck(){
-        MemberDTO member = addMember();
-        given(memberMapper.emailCheck(member.getEmail())).willReturn(1);
-        memberService.regMember(member);
-    }
 
 }
