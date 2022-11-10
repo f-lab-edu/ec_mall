@@ -2,7 +2,8 @@ package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.MemberDao;
 import com.example.ec_mall.dto.MemberRequestDTO;
-import com.example.ec_mall.error.DuplicateEmailException;
+import com.example.ec_mall.exception.APIException;
+import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.MemberMapper;
 import com.example.ec_mall.util.SHA256;
 import lombok.RequiredArgsConstructor;
@@ -21,23 +22,23 @@ public class MemberService {
         MemberDao member = MemberDao.builder()
                 .email(memberRequestDTO.getEmail())
                 .nickName(memberRequestDTO.getNickName())
-                .password(memberRequestDTO.getPassword())
+                //SHA256 암호화
+                .password(SHA256.encrypt(memberRequestDTO.getPassword()))
                 .createdBy(memberRequestDTO.getEmail())
                 .build();
 
         //email 중복체크
         boolean dupCheckEmail = isDuplicatedEmail(member.getEmail());
         if(dupCheckEmail){
-            throw new DuplicateEmailException("중복된 Email입니다." + member.getEmail());
+            log.info("DuplicatedEmail, {}", member.getEmail());
+            throw new APIException(ErrorCode.ALREADY_SAVED_EMAIL);
         }
-        //Password SHA256 암호화
-        member.setPassword(SHA256.encrypt(memberRequestDTO.getPassword()));
 
         int signUpCount = memberMapper.signUpMember(member);
 
         if(signUpCount != 1){
             log.error("registration ERROR! {}", member);
-            throw new RuntimeException("회원가입 메소드 확인\n" + member.getNickName());
+            throw new RuntimeException("회원가입 메소드 확인\n" + member);
         }
     }
 

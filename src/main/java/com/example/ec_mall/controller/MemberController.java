@@ -18,11 +18,11 @@ import javax.validation.Valid;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "member",  consumes = "application/json")
+@RequestMapping(value = "/member",  consumes = "application/json")
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("signUp")
+    @PostMapping("/signUp")
     public ResponseEntity<Object> signUpMember(@RequestBody @Valid MemberRequestDTO memberRequestDTO) {
         memberService.signUpMember(memberRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();

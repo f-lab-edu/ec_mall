@@ -19,9 +19,8 @@ public class MemberRequestDTO {
      *          특히나 이 프로젝트에선 Email을 아이디로 사용하기 때문에 더욱 정규식을 써야한다.
      */
 
-
-    @Email
     @NotBlank(message = "E-mail을 입력하세요.")
+    @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
     private String email;
 
     @NotBlank(message = "최대 10자로 생성하세요.")
