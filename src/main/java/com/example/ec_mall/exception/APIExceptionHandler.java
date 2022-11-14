@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class APIExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> methodArgumentNotValidException(MethodArgumentNotValidException e){
+        ErrorCode errorCode = ErrorCode.INVALID_INPUT_VALUE;
         BindingResult bindingResult = e.getBindingResult(); // BindingResult 은 검증오류를 보관하는 객체이다.
 
         /*
@@ -22,8 +23,9 @@ public class APIExceptionHandler {
         StringBuffer stringBuffer = new StringBuffer();
 
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            stringBuffer.append("[Status:" + errorCode.getStatus()).append(", ");
             stringBuffer.append(fieldError.getField()).append(":");
-            stringBuffer.append(fieldError.getDefaultMessage());
+            stringBuffer.append(fieldError.getDefaultMessage()).append("]");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(stringBuffer.toString());
     }
