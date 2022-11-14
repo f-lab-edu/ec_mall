@@ -3,7 +3,6 @@ package com.example.ec_mall.controller;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
-import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
@@ -15,10 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
@@ -70,9 +67,7 @@ class ProductControllerTest {
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productRequestDTO)))
-                .andExpect(jsonPath("$.status").value(ErrorCode.INVALID_INPUT_VALUE.getStatus()))
-                .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_INPUT_VALUE.getMessage())).andDo(print());
+                .content(objectMapper.writeValueAsString(productRequestDTO))).andDo(print());
     }
     @Test
     @DisplayName("사이즈, 상품 상세 설명, 이미지URL, 카테고리, 소카테고리에 null이 들어갈 경우 실패해야한다.")
@@ -89,9 +84,7 @@ class ProductControllerTest {
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productRequestDTO)))
-                        .andExpect(jsonPath("$.status").value(ErrorCode.INVALID_INPUT_VALUE.getStatus()))
-                        .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_INPUT_VALUE.getMessage())).andDo(print());
+                .content(objectMapper.writeValueAsString(productRequestDTO))).andDo(print());
     }
     @Test
     @DisplayName("가격과 재고에 음수 값이 입력되면 실패해야한다.")
@@ -108,9 +101,7 @@ class ProductControllerTest {
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productRequestDTO)))
-                        .andExpect(jsonPath("$.status").value(ErrorCode.INVALID_INPUT_VALUE.getStatus()))
-                        .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_INPUT_VALUE.getMessage())).andDo(print());
+                .content(objectMapper.writeValueAsString(productRequestDTO))).andDo(print());
     }
     @Test
     @DisplayName("상품명과 상품 상세 설명의 글자수가 45자, 100자가 넘어갈 경우 실패해야한다.")
@@ -127,8 +118,6 @@ class ProductControllerTest {
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productRequestDTO)))
-                .andExpect(jsonPath("$.status").value(ErrorCode.INVALID_INPUT_VALUE.getStatus()))
-                .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_INPUT_VALUE.getMessage())).andDo(print());
+                .content(objectMapper.writeValueAsString(productRequestDTO))).andDo(print());
     }
 }
