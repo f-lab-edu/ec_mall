@@ -1,13 +1,12 @@
 package com.example.ec_mall.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.*;
 import javax.validation.constraints.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class MemberRequestDTO {
 
@@ -20,14 +19,15 @@ public class MemberRequestDTO {
      */
 
     @NotBlank(message = "E-mail을 입력하세요.")
-    @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
+    @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "이메일 형식에 맞게 입력하세요.")
     private String email;
 
-    @NotBlank(message = "최대 10자로 생성하세요.")
+    @NotBlank(message = "NickName을 입력하세요.")
+    @Size(min = 2, max = 10, message = "최소 2자, 최대 10자로 생성하세요")
     private String nickName;
 
-    @NotBlank(message = "8 ~ 16자로 생성하세요. 대소문자, 특수문자, 숫자를 포함하여야 합니다.")
-    @Pattern(regexp = "(?=.*[0-9])(?=.*[A-Za-z])(?=.*\\W)(?=\\S+$).{8,16}")
+    @NotBlank(message = "비밀번호를 입력하세요")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[A-Za-z])(?=.*\\W)(?=\\S+$).{8,16}", message = "8 ~ 16자로 생성하세요. 대소문자, 특수문자, 숫자를 포함하여야 합니다.")
     private String password;
 
 }

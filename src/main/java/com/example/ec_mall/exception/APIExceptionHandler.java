@@ -8,29 +8,29 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class APIExceptionHandler {
-    @ExceptionHandler({APIException.class})
+    @ExceptionHandler(APIException.class)
     public ResponseEntity<Object> handleAPIException(APIException e){
-        ErrorCode errorCode = ErrorCode.ALREADY_SAVED_EMAIL;
 
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(errorCode.getStatus())
-                .message(errorCode.getMessage())
+                .status(e.getErrorCode().getStatus())
+                .message(e.getErrorCode().getMessage())
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> methodArgumentNotValidException(MethodArgumentNotValidException e){
 
-        ErrorCode errorCode = ErrorCode.INVALID_PASSWORD;
+
+        ErrorCode errorCode = ErrorCode.INVALID_INPUT;
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(errorCode.getStatus())
-                .message(errorCode.getMessage())
+                .message(e.getBindingResult().getFieldError().getDefaultMessage())
                 .build();
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
 }

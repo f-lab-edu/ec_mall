@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
-    //400 Bad request
-    INVALID_PASSWORD(400,"유효하지 않은 비밀번호 입니다."),
-    //409 Conflict
-    ALREADY_SAVED_EMAIL(409, "이미 가입된 이메일입니다.");
+    //800 회원가입 - 규칙에 위배된 정보 입력
+    INVALID_INPUT(800,""),
+    //801 회원가입 - 중복된 이메일
+    ALREADY_SAVED_EMAIL(801, "이미 가입된 이메일입니다.");
 
     private final int status;
     private final String message;

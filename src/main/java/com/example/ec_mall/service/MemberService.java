@@ -28,9 +28,17 @@ public class MemberService {
                 .build();
 
         //email 중복체크
+        /**
+         * Log 레벨
+         * trace < debug < info < warn < error
+         * 오른쪽으로 갈수록 심각한 오류
+         *
+         * 하위 레벨의 로그는 상위 레벨의 로그를 포함
+         * ex) debug로 설정시 info, warn, error 로그를 포함하여 출력
+         */
         boolean dupCheckEmail = isDuplicatedEmail(member.getEmail());
         if(dupCheckEmail){
-            log.info("DuplicatedEmail, {}", member.getEmail());
+            log.error("DuplicatedEmail, {}", member.getEmail());
             throw new APIException(ErrorCode.ALREADY_SAVED_EMAIL);
         }
 

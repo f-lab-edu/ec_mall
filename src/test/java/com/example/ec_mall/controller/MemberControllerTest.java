@@ -1,7 +1,6 @@
 package com.example.ec_mall.controller;
 
 import com.example.ec_mall.dto.MemberRequestDTO;
-import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
@@ -47,7 +45,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("유효하지 않은 비밀번호를 입력했을때 실패")
+    @DisplayName("검증-비밀번호 규칙 위반")
     void invalidPassword() throws Exception{
 
         memberRequestDTO = MemberRequestDTO.builder()
@@ -57,8 +55,22 @@ public class MemberControllerTest {
                 .build();
 
         mockMvc.perform(post("/member/signUp").contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(memberRequestDTO))).andExpect(jsonPath("$.status").value(ErrorCode.INVALID_PASSWORD.getStatus()))
-                .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_PASSWORD.getMessage())).andDo(print());
+                .content(mapper.writeValueAsBytes(memberRequestDTO))).andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("검증-닉네임 빈 값이면 가입 실패")
+    void blankNickname() throws Exception{
+
+        memberRequestDTO = MemberRequestDTO.builder()
+                .email("test@test.com")
+                .password("1234")
+                .nickName(null)
+                .build();
+
+        mockMvc.perform(post("/member/signUp").contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsBytes(memberRequestDTO))).andDo(print());
 
     }
 }
