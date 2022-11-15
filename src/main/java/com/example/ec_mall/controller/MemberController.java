@@ -17,7 +17,6 @@ import javax.validation.Valid;
    @Controller의 역할은 Model객체를 만들어 데이터를 담고 View를 찾는다.
    @RestController는 단순히 객체만을 반환하고 객체 데이터는 JSON 또는 XML 형식으로 HTTP응답에 담아서 전송.
  */
-@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/member",  consumes = "application/json")

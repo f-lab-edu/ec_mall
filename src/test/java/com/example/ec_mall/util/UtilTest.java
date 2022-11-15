@@ -3,13 +3,10 @@ package com.example.ec_mall.util;
 import com.example.ec_mall.dto.MemberRequestDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-import com.example.ec_mall.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
@@ -17,8 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class UtilTest {
 
-    @InjectMocks
-    MemberService memberService;
     MemberRequestDTO memberRequestDTO;
 
     @BeforeEach

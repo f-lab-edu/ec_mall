@@ -27,7 +27,6 @@ public class MemberService {
                 .createdBy(memberRequestDTO.getEmail())
                 .build();
 
-        //email 중복체크
         /**
          * Log 레벨
          * trace < debug < info < warn < error
@@ -36,6 +35,7 @@ public class MemberService {
          * 하위 레벨의 로그는 상위 레벨의 로그를 포함
          * ex) debug로 설정시 info, warn, error 로그를 포함하여 출력
          */
+        //email 중복체크
         boolean dupCheckEmail = isDuplicatedEmail(member.getEmail());
         if(dupCheckEmail){
             log.error("DuplicatedEmail, {}", member.getEmail());
