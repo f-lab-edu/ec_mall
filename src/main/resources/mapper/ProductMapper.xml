@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ec_mall.mapper.ProductMapper">
+    <insert id="addProduct" parameterType="com.example.ec_mall.dao.ProductDao" useGeneratedKeys="true" keyProperty="productId" >
+        insert into product (name, price, size, stock, info, created_by, created_date, updated_by, updated_date)
+        values (#{name}, #{price}, #{size}, #{stock}, #{info}, #{createdBy}, now(), #{updatedBy}, now())
+    </insert>
+
+    <insert id="addProductImages">
+        insert into product_images (product_id, images_url, created_by, created_date, updated_by, updated_date)
+        values (#{productId}, #{imagesUrl}, #{createdBy}, now(), #{updatedBy}, now())
+    </insert>
+
+    <insert id="addProductCategory">
+        insert into product_category (product_id, category_id, created_by, created_date, updated_by, updated_date)
+        values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())
+    </insert>
+
+    <select id="product" resultType="com.example.ec_mall.dao.ProductDao">
+        SELECT * FROM product;
+    </select>
+</mapper>
