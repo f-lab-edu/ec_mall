@@ -6,17 +6,38 @@
         values (#{name}, #{price}, #{size}, #{stock}, #{info}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <insert id="addProductImages">
+    <insert id="addProductImages" parameterType="com.example.ec_mall.dao.ProductImagesDao" useGeneratedKeys="true" keyProperty="productImagesId">
         insert into product_images (product_id, images_url, created_by, created_date, updated_by, updated_date)
         values (#{productId}, #{imagesUrl}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <insert id="addProductCategory">
-        insert into product_category (product_id, category_id, created_by, created_date, updated_by, updated_date)
-        values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())
-    </insert>
+<!--    <insert id="addProductCategory" parameterType="com.example.ec_mall.dao.ProductCategoryDao" useGeneratedKeys="true" keyProperty="productCategoryId">-->
+<!--        insert into product_category (product_id, category_id, created_by, created_date, updated_by, updated_date)-->
+<!--        values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())-->
+<!--    </insert>-->
 
     <select id="product" resultType="com.example.ec_mall.dao.ProductDao">
         SELECT * FROM product;
     </select>
+
+    <update id="updateProduct" parameterType="com.example.ec_mall.dao.UpdateProductDao">
+        update product
+        set
+            <if test="name != null">name = #{name},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="size != null">size = #{size},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="info != null">info = #{info},</if>
+            <if test="updatedBy != null">updated_by = #{updatedBy},</if>
+            updated_by = #{updatedBy},
+            updated_date = now()
+        where product_id = #{productId};
+
+        update product_images
+        set
+            <if test="imagesUrl != null">images_url = #{imagesUrl},</if>
+            updated_by = #{updatedBy},
+            updated_date = now()
+        where product_id = #{productId};
+    </update>
 </mapper>
