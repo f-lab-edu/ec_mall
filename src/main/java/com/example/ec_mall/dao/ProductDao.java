@@ -1,7 +1,6 @@
 package com.example.ec_mall.dao;
 
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Data
