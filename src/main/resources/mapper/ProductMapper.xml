@@ -6,18 +6,28 @@
         values (#{name}, #{price}, #{size}, #{stock}, #{info}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <insert id="addProductImages" parameterType="com.example.ec_mall.dao.ProductImagesDao" useGeneratedKeys="true" keyProperty="productImagesId">
+    <insert id="addCategory" parameterType="com.example.ec_mall.dao.CategoryDao" useGeneratedKeys="true" keyProperty="categoryId" >
+        insert into category (category_big, category_small, created_by, created_date, updated_by, updated_date)
+        values (#{bigCategory}, #{smallCategory}, #{createdBy}, now(), #{updatedBy}, now())
+    </insert>
+
+    <insert id="addProductImages" parameterType="com.example.ec_mall.dao.ProductImagesDao">
         insert into product_images (product_id, images_url, created_by, created_date, updated_by, updated_date)
         values (#{productId}, #{imagesUrl}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-<!--    <insert id="addProductCategory" parameterType="com.example.ec_mall.dao.ProductCategoryDao" useGeneratedKeys="true" keyProperty="productCategoryId">-->
-<!--        insert into product_category (product_id, category_id, created_by, created_date, updated_by, updated_date)-->
-<!--        values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())-->
-<!--    </insert>-->
+    <insert id="addProductCategory" parameterType="com.example.ec_mall.dao.ProductCategoryDao">
+        insert into product_category (product_id, category_id, created_by, created_date, updated_by, updated_date)
+        values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())
+    </insert>
 
     <select id="product" resultType="com.example.ec_mall.dao.ProductDao">
         SELECT * FROM product;
+    </select>
+
+    <select id="findCategoryId" resultType="long">
+        SELECT category_id FROM product_category
+        WHERE product_id = #{productId};
     </select>
 
     <update id="updateProduct" parameterType="com.example.ec_mall.dao.UpdateProductDao">
@@ -29,9 +39,16 @@
             <if test="stock != null">stock = #{stock},</if>
             <if test="info != null">info = #{info},</if>
             <if test="updatedBy != null">updated_by = #{updatedBy},</if>
-            updated_by = #{updatedBy},
             updated_date = now()
         where product_id = #{productId};
+
+        update category
+        set
+        <if test="bigCategory != null">category_big = #{bigCategory},</if>
+        <if test="smallCategory != null">category_small = #{smallCategory},</if>
+        <if test="updatedBy != null">updated_by = #{updatedBy},</if>
+        updated_date = now()
+        where category_id = #{categoryId};
 
         update product_images
         set

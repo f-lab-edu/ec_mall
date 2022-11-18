@@ -1,8 +1,6 @@
 package com.example.ec_mall.service;
 
-import com.example.ec_mall.dao.ProductDao;
-import com.example.ec_mall.dao.ProductImagesDao;
-import com.example.ec_mall.dao.UpdateProductDao;
+import com.example.ec_mall.dao.*;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +26,22 @@ public class ProductService {
 
         productMapper.addProduct(product);
 
-//        ProductCategoryDao productCategory = ProductCategoryDao.builder()
-//                .productId(product.getProductId())
-//                .createdBy("admin")
-//                .updatedBy("admin")
-//                .build();
-//
-//        productMapper.addProductCategory(productCategory);
+        CategoryDao category = CategoryDao.builder()
+                .bigCategory(productRequestDTO.getBigCategory().toString())
+                .smallCategory(productRequestDTO.getSmallCategory())
+                .createdBy("admin")
+                .updatedBy("admin")
+                .build();
+        productMapper.addCategory(category);
+
+        ProductCategoryDao productCategory = ProductCategoryDao.builder()
+                .productId(product.getProductId())
+                .categoryId(category.getCategoryId())
+                .createdBy("admin")
+                .updatedBy("admin")
+                .build();
+
+        productMapper.addProductCategory(productCategory);
 
         ProductImagesDao productImages = ProductImagesDao.builder()
                 .productId(product.getProductId())
@@ -54,6 +61,7 @@ public class ProductService {
     public void updateProduct(UpdateProductDao updateProductDao, Long id){
         UpdateProductDao update = UpdateProductDao.builder()
                 .productId(id)
+                .categoryId(productMapper.findCategoryId(id))
                 .name(updateProductDao.getName())
                 .price(updateProductDao.getPrice())
                 .stock(updateProductDao.getStock())
@@ -63,6 +71,7 @@ public class ProductService {
                 .smallCategory(updateProductDao.getSmallCategory())
                 .updatedBy("admin")
                 .build();
+        System.out.println(productMapper.findCategoryId(id));
         productMapper.updateProduct(update);
     }
 }

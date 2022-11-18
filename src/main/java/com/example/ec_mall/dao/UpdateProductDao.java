@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class UpdateProductDao {
     private Long productId;
+    private Long categoryId;
     private String name;
     private int price;
     private String size;
