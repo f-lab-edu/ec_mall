@@ -6,6 +6,11 @@
         values (#{name}, #{price}, #{size}, #{stock}, #{info}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
+    <insert id="addCategory" parameterType="com.example.ec_mall.dao.CategoryDao" useGeneratedKeys="true" keyProperty="categoryId">
+        insert into category (category_big, category_small, created_by, created_date, updated_by, updated_date)
+        values (#{bigCategory}, #{smallCategory}, #{createdBy}, now(), #{updatedBy}, now())
+    </insert>
+
     <insert id="addProductImages">
         insert into product_images (product_id, images_url, created_by, created_date, updated_by, updated_date)
         values (#{productId}, #{imagesUrl}, #{createdBy}, now(), #{updatedBy}, now())
@@ -19,4 +24,11 @@
     <select id="product" resultType="com.example.ec_mall.dao.ProductDao">
         SELECT * FROM product;
     </select>
+
+    <delete id="deleteProduct">
+        DELETE A, B, C, D FROM product AS A LEFT JOIN product_category AS B ON A.product_id = B.product_id
+        LEFT JOIN category AS C ON B.category_id = C.category_id
+        LEFT JOIN product_images AS D ON A.product_id = D.product_id
+        WHERE A.product_id = #{productId}
+    </delete>
 </mapper>

@@ -1,8 +1,6 @@
 package com.example.ec_mall.service;
 
-import com.example.ec_mall.dao.ProductDao;
-import com.example.ec_mall.dao.ProductCategoryDao;
-import com.example.ec_mall.dao.ProductImagesDao;
+import com.example.ec_mall.dao.*;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +25,18 @@ public class ProductService {
 
         productMapper.addProduct(product);
 
+        CategoryDao category = CategoryDao.builder()
+                .bigCategory(productRequestDTO.getBigCategory().toString())
+                .smallCategory(productRequestDTO.getSmallCategory())
+                .createdBy("admin")
+                .updatedBy("admin")
+                .build();
+
+        productMapper.addCategory(category);
+
         ProductCategoryDao productCategory = ProductCategoryDao.builder()
+                .productId(product.getProductId())
+                .categoryId(category.getCategoryId())
                 .createdBy("admin")
                 .updatedBy("admin")
                 .build();
@@ -35,11 +44,15 @@ public class ProductService {
         productMapper.addProductCategory(productCategory);
 
         ProductImagesDao productImages = ProductImagesDao.builder()
+                .productId(product.getProductId())
                 .imagesUrl(productRequestDTO.getImagesUrl())
                 .createdBy("admin")
                 .createdBy("admin")
                 .build();
 
         productMapper.addProductImages(productImages);
+    }
+    public void deleteProduct(Long productId){
+        productMapper.deleteProduct(productId);
     }
 }
