@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -47,5 +48,12 @@ class ProductServiceTest {
         verify(productMapper, times(1)).addProduct(any());
         verify(productMapper, times(1)).addProductImages(any());
         verify(productMapper, times(1)).addProductCategory(any());
+    }
+    @Test
+    @DisplayName("상품 삭제 서비스 호출 시 SQL이 무조건 한번 호출된다.")
+    void deleteProduct(){
+        doNothing().when(productMapper).deleteProduct(anyLong());
+        productService.deleteProduct(1L);
+        verify(productMapper, times(1)).deleteProduct(anyLong());
     }
 }

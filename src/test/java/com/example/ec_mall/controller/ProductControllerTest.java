@@ -5,26 +5,32 @@ import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
 import com.example.ec_mall.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
-@Log4j2
 class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
+    /*
+        @Mock => Mockito.mock()를 줄인 것이며, 가짜 객체를 만들어 사용하는 것을 말한다.
+        @MockBean => mock 객체를 스프링 컨텍스트에 등록하고 @Autowired로 스프링 컨텍스트에 등록된 mock 객체들을 주입받아서 의존성 처리를 해준다.
+        @InjectMocks => @InjectMocks는 의존성이 필요로 하는 필드에 붙이는 어노테이션으로 @Mock이나 @Spy 어노테이션이 붙은 필드를 주입받는다.
+     */
     @MockBean
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
@@ -119,5 +125,18 @@ class ProductControllerTest {
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequestDTO))).andDo(print());
+    }
+    @Test
+    @DisplayName("관리자가 상품 삭제를 성공한다.")
+    void deleteProduct() throws Exception {
+        productService.deleteProduct(1L);
+
+        mockMvc.perform(delete("/delete/1").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)).andDo(print());
+    }
+    @Test
+    @DisplayName("관리자가 상품 삭제를 실패한다.")
+    void deleteProductError() throws Exception{
+        mockMvc.perform(delete("/delete/1230")).andExpect(status().is4xxClientError()).andDo(print());
     }
 }

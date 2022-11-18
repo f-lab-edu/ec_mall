@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class ProductCategoryDao {
-    private long productCategoryId;     // 상품 카테고리 ID
-    private long productId;             // 상품 ID
+public class CategoryDao {
     private long categoryId;            // 카테고리 ID
+    private String bigCategory;         // 카테고리
+    private String smallCategory;       // 상세카테고리
     private String createdBy;           // 등록자
     private LocalDateTime createdDate;  // 등록일자
     private String updatedBy;           // 수정자
