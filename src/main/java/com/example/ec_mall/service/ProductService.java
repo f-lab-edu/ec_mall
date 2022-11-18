@@ -71,7 +71,6 @@ public class ProductService {
                 .smallCategory(updateProductDao.getSmallCategory())
                 .updatedBy("admin")
                 .build();
-        System.out.println(productMapper.findCategoryId(id));
         productMapper.updateProduct(update);
     }
 }
