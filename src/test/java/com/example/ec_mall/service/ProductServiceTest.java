@@ -11,8 +11,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+
 import java.sql.SQLException;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowableOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -57,5 +61,12 @@ class ProductServiceTest {
         doNothing().when(productMapper).deleteProduct(anyLong());
         productService.deleteProduct(1L);
         verify(productMapper, times(1)).deleteProduct(anyLong());
+    }
+    @Test
+    @DisplayName("DB 오류 발생 시 상품 삭제 서비스는 실패해야 한다.")
+    void deleteProductException() {
+        doThrow(DataIntegrityViolationException.class).when(productMapper).deleteProduct(anyLong());
+
+        assertThrows(DataIntegrityViolationException.class, () -> productService.deleteProduct(1L));
     }
 }
