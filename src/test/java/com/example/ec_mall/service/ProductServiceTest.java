@@ -58,11 +58,4 @@ class ProductServiceTest {
         productService.deleteProduct(1L);
         verify(productMapper, times(1)).deleteProduct(anyLong());
     }
-    @Test
-    @DisplayName("상품 등록 서비스 호출 후, SQL 오류 발생 시 서비스는 실패해야 한다.")
-    void addProductFailWithSqlException() throws SQLException{
-        doThrow(SQLException.class).when(productMapper).deleteProduct(anyLong());
-
-        assertThrows(SQLException.class, () -> productService.deleteProduct(anyLong()));
-    }
 }
