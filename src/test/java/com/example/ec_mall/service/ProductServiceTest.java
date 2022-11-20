@@ -107,7 +107,7 @@ class ProductServiceTest {
     }
     @Test
     @DisplayName("SQL 혹은 Data 에러시 수정 실패")
-    void rollback(){
+    void updateFail(){
 
         //given
         updateProductDao = UpdateProductDao.builder()
@@ -129,5 +129,12 @@ class ProductServiceTest {
 
         //then
         assertThrows(DataIntegrityViolationException.class, () -> productService.updateProduct(updateProductDao, 0L));
+    }
+
+    @Test
+    @DisplayName("Category 테이블에 값이 없는 경우")
+    void notFoundCategoryId(){
+        when(productMapper.findCategoryId(1L)).thenThrow(NullPointerException.class);
+        assertThrows(NullPointerException.class, ()-> productService.updateProduct(updateProductDao, 1L));
     }
 }

@@ -32,6 +32,7 @@ public class ProductService {
                 .createdBy("admin")
                 .updatedBy("admin")
                 .build();
+
         productMapper.addCategory(category);
 
         ProductCategoryDao productCategory = ProductCategoryDao.builder()
