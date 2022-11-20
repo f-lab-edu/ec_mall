@@ -1,10 +1,12 @@
 package com.example.ec_mall.service;
 
+import com.example.ec_mall.dao.ProductDao;
 import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
 import com.example.ec_mall.mapper.ProductMapper;
+import org.apache.ibatis.binding.BindingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -59,82 +64,82 @@ class ProductServiceTest {
         //given
         UpdateProductDao update = UpdateProductDao.builder()
                 .productId(1L)
-                .categoryId(2L)
-                .name("test1")
-                .price(1000)
-                .stock(12)
-                .size("X")
-                .imagesUrl("/test/img")
-                .bigCategory("Top")
-                .smallCategory("T-shirts")
-                .info("테스트 정보")
+                .categoryId(0L)
+                .name("테스트1")
+                .price(50000)
+                .size(sizeEnum.S)
+                .stock(30)
+                .info("상품 상세 설명입니다!")
+                .imagesUrl("/product/images/test1.jpg")
+                .bigCategory(categoryEnum.Top)
+                .smallCategory("반팔")
                 .updatedBy("admin")
                 .build();
 
-        doNothing().when(productMapper).updateProduct(any());
-
         //when
-        productService.updateProduct(update, update.getProductId());
+        productService.updateProduct(productRequestDTO, 1L);
 
         //then
-        verify(productMapper, atLeastOnce()).updateProduct(any());
+        verify(productMapper, atLeastOnce()).updateProduct(update);
     }
 
     @Test
     @DisplayName("상품 수정 성공시 변경 전 값과 비교.")
     void updateExpectedName(){
-        //given
-        UpdateProductDao update = UpdateProductDao.builder()
-                .productId(1L)
-                .categoryId(2L)
-                .name("test1")
-                .price(12000)
-                .stock(12)
-                .size("X")
-                .imagesUrl("/test/img")
-                .bigCategory("Top")
-                .smallCategory("T-shirts")
-                .info("테스트 정보")
-                .updatedBy("admin")
+        List<ProductDao> expected = productMapper.product();
+        ProductRequestDTO update = ProductRequestDTO.builder()
+                .name("test")
                 .build();
+        productService.updateProduct(update, 1L);
 
-        //when
-        String result = update.getName();
-        boolean isDiffer = result.equals(productRequestDTO.getName());
-
-        //then
-        assertFalse(isDiffer);
+        expected.add(0, ProductDao.builder().name("test").build());
+        doNothing().when(productMapper).updateProduct(updateProductDao);
+        doReturn(expected).when(productMapper).product();
+        assertEquals(expected.get(0).getName(), productRequestDTO.getName());
     }
+
     @Test
     @DisplayName("SQL 혹은 Data 에러시 수정 실패")
     void updateFail(){
 
         //given
-        updateProductDao = UpdateProductDao.builder()
+        UpdateProductDao updateProduct = UpdateProductDao.builder()
                 .productId(1L)
-                .categoryId(2L)
-                .name("test")
-                .price(1000)
+                .categoryId(0L)
+                .name("test1")
+                .price(12000)
                 .stock(12)
-                .size("X")
+                .size(sizeEnum.L)
                 .imagesUrl("/test/img")
-                .bigCategory("Top")
+                .bigCategory(categoryEnum.Pants)
                 .smallCategory("T-shirts")
                 .info("테스트 정보")
                 .updatedBy("admin")
                 .build();
 
+        ProductRequestDTO update = ProductRequestDTO.builder()
+                .name("test1")
+                .price(12000)
+                .stock(12)
+                .size(sizeEnum.L)
+                .imagesUrl("/test/img")
+                .bigCategory(categoryEnum.Pants)
+                .smallCategory("T-shirts")
+                .info("테스트 정보")
+                .build();
+
+
         //when
-        doThrow(DataIntegrityViolationException.class).when(productMapper).updateProduct(any());
+        doThrow(DataIntegrityViolationException.class).when(productMapper).updateProduct(updateProduct);
 
         //then
-        assertThrows(DataIntegrityViolationException.class, () -> productService.updateProduct(updateProductDao, 0L));
+        assertThrows(DataIntegrityViolationException.class, () -> productService.updateProduct(update, 1L));
     }
 
     @Test
     @DisplayName("Category 테이블에 값이 없는 경우")
     void notFoundCategoryId(){
-        when(productMapper.findCategoryId(1L)).thenThrow(NullPointerException.class);
-        assertThrows(NullPointerException.class, ()-> productService.updateProduct(updateProductDao, 1L));
+        when(productMapper.findCategoryId(1L)).thenThrow(BindingException.class);
+        assertThrows(BindingException.class, ()-> productService.updateProduct(productRequestDTO, 1L));
     }
 }

@@ -12,6 +12,5 @@ public interface ProductMapper {
     long findCategoryId(long productId);
     void addProductImages(ProductImagesDao productImages);
     List<ProductDao> product();
-
     void updateProduct(UpdateProductDao updateProductDao);
 }

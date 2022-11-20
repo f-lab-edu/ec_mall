@@ -1,6 +1,5 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +29,9 @@ public class ProductController {
      *   ex) 기본 키로 Entity를 식별하는 엔드포인트로 사용
      * @param id  변경할 상품의 product_id
      */
-    @PatchMapping("/update/{id}")
-    public ResponseEntity<Object> updateProduct(@PathVariable Long id, @RequestBody @Valid UpdateProductDao updateProductDao){
-        productService.updateProduct(updateProductDao, id);
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductRequestDTO> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequestDTO productRequestDTO){
+        productService.updateProduct(productRequestDTO, id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

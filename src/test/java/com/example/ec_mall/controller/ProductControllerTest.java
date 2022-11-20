@@ -1,6 +1,5 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
@@ -31,7 +30,6 @@ class ProductControllerTest {
     @MockBean
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
-    private UpdateProductDao updateProductDao;
     @BeforeEach
     void init() {
         productRequestDTO = ProductRequestDTO.builder()
@@ -128,29 +126,36 @@ class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 성공")
     void updateProduct() throws Exception {
-
-        updateProductDao = UpdateProductDao.builder()
-                .productId(29L)
-                .categoryId(2L)
+        productRequestDTO = ProductRequestDTO.builder()
                 .name("test")
                 .price(1000)
                 .stock(12)
-                .size("X")
+                .size(sizeEnum.L)
                 .imagesUrl("/test/img")
-                .bigCategory("Top")
+                .bigCategory(categoryEnum.Top)
                 .smallCategory("T-shirts")
                 .info("테스트 정보")
-                .updatedBy("admin")
                 .build();
-
-        mockMvc.perform(patch("/product/update/29").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateProductDao))).andExpect(status().isOk()).andDo(print());
+        productService.updateProduct(productRequestDTO, 29L);
+        mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(productRequestDTO))).andExpect(status().isOk()).andDo(print());
     }
 
     @Test
-    @DisplayName("상품 수정 실패")
+    @DisplayName("상품 수정 실패 : size Null")
     void updateProductFail() throws Exception {
-        mockMvc.perform(patch("/product/update/29").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateProductDao))).andExpect(status().isBadRequest()).andDo(print());
+        productRequestDTO = ProductRequestDTO.builder()
+                .name("test")
+                .price(1000)
+                .stock(12)
+                .size(null)
+                .imagesUrl("/test/img")
+                .bigCategory(categoryEnum.Top)
+                .smallCategory("T-shirts")
+                .info("테스트 정보")
+                .build();
+        productService.updateProduct(productRequestDTO, 29L);
+        mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(productRequestDTO))).andExpect(status().isBadRequest()).andDo(print());
     }
 }
