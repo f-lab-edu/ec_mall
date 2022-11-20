@@ -1,5 +1,6 @@
 package com.example.ec_mall.controller;
 
+import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +31,7 @@ class ProductControllerTest {
     @MockBean
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
+    private UpdateProductDao updateProductDao;
     @BeforeEach
     void init() {
         productRequestDTO = ProductRequestDTO.builder()
@@ -119,5 +123,34 @@ class ProductControllerTest {
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequestDTO))).andDo(print());
+    }
+
+    @Test
+    @DisplayName("상품 수정 성공")
+    void updateProduct() throws Exception {
+
+        updateProductDao = UpdateProductDao.builder()
+                .productId(29L)
+                .categoryId(2L)
+                .name("test")
+                .price(1000)
+                .stock(12)
+                .size("X")
+                .imagesUrl("/test/img")
+                .bigCategory("Top")
+                .smallCategory("T-shirts")
+                .info("테스트 정보")
+                .updatedBy("admin")
+                .build();
+
+        mockMvc.perform(patch("/product/update/29").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateProductDao))).andExpect(status().isOk()).andDo(print());
+    }
+
+    @Test
+    @DisplayName("상품 수정 실패")
+    void updateProductFail() throws Exception {
+        mockMvc.perform(patch("/product/update/29").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateProductDao))).andExpect(status().isBadRequest()).andDo(print());
     }
 }
