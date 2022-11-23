@@ -13,10 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.sql.SQLException;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.catchThrowableOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -38,8 +34,8 @@ class ProductServiceTest {
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("반팔")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.TOP.getShort())
                 .build();
     }
     @Test

@@ -16,7 +16,7 @@ public class ProductService {
         ProductDao product = ProductDao.builder()
                 .name(productRequestDTO.getName())
                 .price(productRequestDTO.getPrice())
-                .size(productRequestDTO.getSize().toString())
+                .size(productRequestDTO.getSize())
                 .stock(productRequestDTO.getStock())
                 .info(productRequestDTO.getInfo())
                 .createdBy("admin")
@@ -26,7 +26,7 @@ public class ProductService {
         productMapper.addProduct(product);
 
         CategoryDao category = CategoryDao.builder()
-                .bigCategory(productRequestDTO.getBigCategory().toString())
+                .bigCategory(productRequestDTO.getBigCategory())
                 .smallCategory(productRequestDTO.getSmallCategory())
                 .createdBy("admin")
                 .updatedBy("admin")

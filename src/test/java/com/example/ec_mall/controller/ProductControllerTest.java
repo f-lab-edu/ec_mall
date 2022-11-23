@@ -1,8 +1,10 @@
 package com.example.ec_mall.controller;
 
+import com.example.ec_mall.dao.ProductDao;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
+import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,8 +47,8 @@ class ProductControllerTest {
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("반팔")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.TOP.getShort())
                 .build();
     }
     @Test
@@ -68,8 +72,8 @@ class ProductControllerTest {
                 .stock(150)
                 .info("상품 상세 설명입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Pants)
-                .smallCategory("반바지")
+                .bigCategory(categoryEnum.PANTS)
+                .smallCategory(categoryEnum.PANTS.getShort())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -102,8 +106,8 @@ class ProductControllerTest {
                 .stock(-150)
                 .info("상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("긴팔")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.TOP.getShort())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -119,8 +123,8 @@ class ProductControllerTest {
                 .stock(150)
                 .info("상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("긴팔")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.TOP.getLong())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -129,14 +133,18 @@ class ProductControllerTest {
     @Test
     @DisplayName("관리자가 상품 삭제를 성공한다.")
     void deleteProduct() throws Exception {
-        productService.deleteProduct(1L);
+        doNothing().when(productService).deleteProduct(anyLong());
 
-        mockMvc.perform(delete("/delete/1").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)).andDo(print());
+        mockMvc.perform(delete("/delete/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
     }
     @Test
-    @DisplayName("관리자가 상품 삭제를 실패한다.")
+    @DisplayName("productId가 잘 못된 경우 상품 삭제를 실패해야한다.")
     void deleteProductError() throws Exception{
-        mockMvc.perform(delete("/delete/1230")).andExpect(status().is4xxClientError()).andDo(print());
+        doNothing().when(productService).deleteProduct(anyLong());
+
+        mockMvc.perform(delete("/delete/TEST"))
+                .andExpect(status().is4xxClientError()).andDo(print());
     }
 }
