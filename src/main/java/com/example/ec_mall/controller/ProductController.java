@@ -1,5 +1,6 @@
 package com.example.ec_mall.controller;
 
+import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +22,12 @@ public class ProductController {
     public ResponseEntity<Object> addProduct(@RequestBody @Valid ProductRequestDTO productRequestDTO) {
         productService.addProduct(productRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/info/{id}")
+    public ResponseEntity<List<UpdateProductDao>> getProduct(@PathVariable Long id){
+        List<UpdateProductDao> update = productService.getProduct(id);
+        return ResponseEntity.status(HttpStatus.OK).body(update);
     }
     /**
      * UPDATE ( PUT vs PATCH )

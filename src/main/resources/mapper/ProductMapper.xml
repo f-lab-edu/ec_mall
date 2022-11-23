@@ -30,6 +30,23 @@
         WHERE product_id = #{productId};
     </select>
 
+    <select id="findProductById" resultType="com.example.ec_mall.dao.UpdateProductDao">
+        select A.product_id,
+               C.category_id,
+               A.name,
+               A.price,
+               A.size,
+               A.stock,
+               A.info,
+               D.images_url,
+               C.category_big,
+               C.category_small
+        FROM product AS A LEFT JOIN product_category AS B ON A.product_id = B.product_id
+                          LEFT JOIN category AS C ON B.category_id = C.category_id
+                          LEFT JOIN product_images AS D ON A.product_id = D.product_id
+        where A.product_id = #{productId}
+    </select>
+
     <update id="updateProduct" parameterType="com.example.ec_mall.dao.UpdateProductDao">
         update product
         set
@@ -40,7 +57,7 @@
             <if test="info != null">info = #{info},</if>
             <if test="updatedBy != null">updated_by = #{updatedBy},</if>
             updated_date = now()
-        where product_id = #{productId};
+        where A.product_id = #{productId}
 
         update category
         set
