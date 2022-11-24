@@ -1,10 +1,8 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dao.ProductDao;
 import com.example.ec_mall.dto.ProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
-import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +14,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProductController.class)
 class ProductControllerTest {
@@ -135,8 +135,10 @@ class ProductControllerTest {
     void deleteProduct() throws Exception {
         doNothing().when(productService).deleteProduct(anyLong());
 
-        mockMvc.perform(delete("/delete/1")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/product/delete/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(productRequestDTO)))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
     @Test
@@ -144,7 +146,8 @@ class ProductControllerTest {
     void deleteProductError() throws Exception{
         doNothing().when(productService).deleteProduct(anyLong());
 
-        mockMvc.perform(delete("/delete/TEST"))
-                .andExpect(status().is4xxClientError()).andDo(print());
+        mockMvc.perform(delete("/product/delete/TEST"))
+                .andExpect(status().is4xxClientError())
+                .andDo(print());
     }
 }
