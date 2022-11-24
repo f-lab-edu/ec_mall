@@ -1,7 +1,7 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.ProductRequestDTO;
+import com.example.ec_mall.dto.UpdateProductRequestDTO;
 import com.example.ec_mall.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,8 +38,8 @@ public class ProductController {
      * @param id  변경할 상품의 product_id
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductRequestDTO> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequestDTO productRequestDTO){
-        productService.updateProduct(productRequestDTO, id);
+    public ResponseEntity<UpdateProductRequestDTO> updateProduct(@PathVariable Long id, @RequestBody @Valid UpdateProductRequestDTO updateProductRequestDTO){
+        productService.updateProduct(updateProductRequestDTO, id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

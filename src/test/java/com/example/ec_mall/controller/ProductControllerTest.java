@@ -1,11 +1,14 @@
 package com.example.ec_mall.controller;
 
 import com.example.ec_mall.dto.ProductRequestDTO;
+import com.example.ec_mall.dto.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
+import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,6 +34,7 @@ class ProductControllerTest {
     @MockBean
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
+    private UpdateProductRequestDTO updateProductRequestDTO;
     @BeforeEach
     void init() {
         productRequestDTO = ProductRequestDTO.builder()
@@ -126,7 +131,7 @@ class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 성공")
     void updateProduct() throws Exception {
-        productRequestDTO = ProductRequestDTO.builder()
+        updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("test")
                 .price(1000)
                 .stock(12)
@@ -136,17 +141,17 @@ class ProductControllerTest {
                 .smallCategory(categoryEnum.JEAN)
                 .info("테스트 정보")
                 .build();
-        productService.updateProduct(productRequestDTO, 1L);
-        mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(productRequestDTO))).andExpect(status().isOk()).andDo(print());
+
+        doNothing().when(productService).updateProduct(updateProductRequestDTO,1L);
+        mockMvc.perform(patch("/product/1").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateProductRequestDTO))).andExpect(status().isOk()).andDo(print());
     }
 
     @Test
-    @DisplayName("상품 수정 실패 : size Null")
+    @DisplayName("상품 수정 실패")
     void updateProductFail() throws Exception {
-        productRequestDTO = ProductRequestDTO.builder()
+        updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("test")
-                .price(1000)
                 .stock(12)
                 .size(null)
                 .imagesUrl("/test/img")
@@ -154,8 +159,10 @@ class ProductControllerTest {
                 .smallCategory(categoryEnum.SHIRT)
                 .info("테스트 정보")
                 .build();
-
+        doThrow(APIException.class).when(productService).updateProduct(updateProductRequestDTO,29L);
         mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(productRequestDTO))).andExpect(status().isBadRequest()).andDo(print());
+                .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> productService.updateProduct(updateProductRequestDTO, 29L)))
+                .andExpect(status().isBadRequest()).andDo(print());
     }
 }
