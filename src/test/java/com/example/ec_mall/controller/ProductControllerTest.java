@@ -39,8 +39,8 @@ class ProductControllerTest {
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("반팔")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.valueOf("TOP"))
                 .build();
     }
     @Test
@@ -64,8 +64,8 @@ class ProductControllerTest {
                 .stock(150)
                 .info("상품 상세 설명입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Pants)
-                .smallCategory("반바지")
+                .bigCategory(categoryEnum.PANTS)
+                .smallCategory(categoryEnum.valueOf("Short-Pants"))
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -98,8 +98,8 @@ class ProductControllerTest {
                 .stock(-150)
                 .info("상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("긴팔")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.valueOf("Short-Top"))
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -115,8 +115,8 @@ class ProductControllerTest {
                 .stock(150)
                 .info("상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("긴팔")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.valueOf("Short-Top"))
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -132,11 +132,11 @@ class ProductControllerTest {
                 .stock(12)
                 .size(sizeEnum.L)
                 .imagesUrl("/test/img")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("T-shirts")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.JEAN)
                 .info("테스트 정보")
                 .build();
-        productService.updateProduct(productRequestDTO, 29L);
+        productService.updateProduct(productRequestDTO, 1L);
         mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequestDTO))).andExpect(status().isOk()).andDo(print());
     }
@@ -150,11 +150,11 @@ class ProductControllerTest {
                 .stock(12)
                 .size(null)
                 .imagesUrl("/test/img")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("T-shirts")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.SHIRT)
                 .info("테스트 정보")
                 .build();
-        productService.updateProduct(productRequestDTO, 29L);
+
         mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequestDTO))).andExpect(status().isBadRequest()).andDo(print());
     }

@@ -25,8 +25,8 @@ public class ProductController {
     }
 
     @GetMapping("/info/{id}")
-    public ResponseEntity<List<UpdateProductDao>> getProduct(@PathVariable Long id){
-        List<UpdateProductDao> update = productService.getProduct(id);
+    public ResponseEntity<List<ProductRequestDTO>> getProduct(@PathVariable Long id){
+        List<ProductRequestDTO> update = productService.getProductInfo(id);
         return ResponseEntity.status(HttpStatus.OK).body(update);
     }
     /**

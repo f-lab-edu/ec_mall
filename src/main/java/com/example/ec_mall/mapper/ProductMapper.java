@@ -1,6 +1,7 @@
 package com.example.ec_mall.mapper;
 
 import com.example.ec_mall.dao.*;
+import com.example.ec_mall.dto.ProductRequestDTO;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
@@ -12,6 +13,6 @@ public interface ProductMapper {
     long findCategoryId(long productId);
     void addProductImages(ProductImagesDao productImages);
     List<ProductDao> product();
-    List<UpdateProductDao> findProductById(long productId);
-    List<UpdateProductDao> updateProduct(UpdateProductDao updateProductDao);
+    List<ProductRequestDTO> findProductInfoById(long productId);
+    void updateProduct(UpdateProductDao updateProductDao);
 }

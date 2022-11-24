@@ -49,10 +49,9 @@ public class ProductService {
 
     /**상품 조회 API
      * @param id 조회할 상품의 product_id
-     * TODO 예외 넣어야됨(category, images_url 등)
      */
-    public List<UpdateProductDao> getProduct(Long id){
-        return productMapper.findProductById(id);
+    public List<ProductRequestDTO> getProductInfo(Long id){
+        return productMapper.findProductInfoById(id);
     }
 
     /**
