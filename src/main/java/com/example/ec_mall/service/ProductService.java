@@ -59,17 +59,13 @@ public class ProductService {
         return productMapper.findProductInfoById(id);
     }
 
-    private boolean isExisted(Long id){
-        return productMapper.findProductInfoById(id).size() == 0;
-    }
-
     /**
      * 상품 수정 API
      * @param updateProductRequestDTO 업데이트 정보
      * @param id 변경할 상품의 product_id
      */
     public void updateProduct(UpdateProductRequestDTO updateProductRequestDTO, Long id){
-        boolean checkProduct = isExisted(id);
+        boolean checkProduct = getProductInfo(id).size() == 0;
         if(checkProduct) {
             log.error("is not Existed Product, Product Id : {}", id);
             throw new APIException(ErrorCode.NOT_FOUND_PRODUCT);

@@ -38,5 +38,5 @@ public class ProductRequestDTO {
     private categoryEnum bigCategory;
 
     @NotNull(message = "소 카테고리는 필수 입력 값입니다.")
-    private categoryEnum smallCategory;
+    private String smallCategory;
 }

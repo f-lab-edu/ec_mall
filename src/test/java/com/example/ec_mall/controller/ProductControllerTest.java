@@ -5,6 +5,7 @@ import com.example.ec_mall.dto.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
 import com.example.ec_mall.exception.APIException;
+import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
@@ -45,7 +47,7 @@ class ProductControllerTest {
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.valueOf("TOP"))
+                .smallCategory(categoryEnum.TOP.getLong())
                 .build();
     }
     @Test
@@ -70,7 +72,7 @@ class ProductControllerTest {
                 .info("상품 상세 설명입니다.")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.PANTS)
-                .smallCategory(categoryEnum.valueOf("Short-Pants"))
+                .smallCategory(categoryEnum.PANTS.getLong())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +106,7 @@ class ProductControllerTest {
                 .info("상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.valueOf("Short-Top"))
+                .smallCategory(categoryEnum.TOP.getLong())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -121,7 +123,7 @@ class ProductControllerTest {
                 .info("상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.valueOf("Short-Top"))
+                .smallCategory(categoryEnum.TOP.getLong())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -138,7 +140,7 @@ class ProductControllerTest {
                 .size(sizeEnum.L)
                 .imagesUrl("/test/img")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.JEAN)
+                .smallCategory(categoryEnum.PANTS.getLong())
                 .info("테스트 정보")
                 .build();
 
@@ -148,21 +150,45 @@ class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("상품 수정 실패")
+    @DisplayName("상품 수정 실패 : Null 이거나 유효하지 않은 값들이 입력됐을때")
     void updateProductFail() throws Exception {
+        updateProductRequestDTO = UpdateProductRequestDTO.builder()
+                .name(null)
+                .stock(-1)
+                .size(null)
+                .price(-1)
+                .imagesUrl(null)
+                .bigCategory(null)
+                .smallCategory(null)
+                .info(null)
+                .build();
+
+        doNothing().when(productService).updateProduct(updateProductRequestDTO, 29L);
+
+        mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(status().isBadRequest()).andDo(print());
+    }
+    @Test
+    @DisplayName("상품 수정 전 해당 상품 없을 시 Exception 발생 ( Status : 901, Message : 없는 상품입니다.)")
+    void foundFailBeforeUpdate() throws Exception {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("test")
                 .stock(12)
-                .size(null)
+                .size(sizeEnum.S)
                 .imagesUrl("/test/img")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.SHIRT)
+                .smallCategory(categoryEnum.TOP.getLong())
                 .info("테스트 정보")
                 .build();
-        doThrow(APIException.class).when(productService).updateProduct(updateProductRequestDTO,29L);
-        mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
+
+        doThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT)).when(productService).updateProduct(updateProductRequestDTO, 20L);
+
+        mockMvc.perform(patch("/product/20").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
-                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> productService.updateProduct(updateProductRequestDTO, 29L)))
+                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> productService.updateProduct(updateProductRequestDTO,20L)))
+                .andExpect(jsonPath("$.status").value(901))
+                .andExpect(jsonPath("$.message").value("없는 상품입니다."))
                 .andExpect(status().isBadRequest()).andDo(print());
     }
 }

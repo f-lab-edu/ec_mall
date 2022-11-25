@@ -23,7 +23,7 @@ public class UpdateProductDao {
     private String info;
     private String imagesUrl;
     private categoryEnum bigCategory;
-    private categoryEnum smallCategory;
+    private String smallCategory;
     private String updatedBy;
     private LocalDateTime updatedDate;
 }

@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,11 +23,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/info/{id}")
-    public ResponseEntity<List<ProductRequestDTO>> getProduct(@PathVariable Long id){
-        List<ProductRequestDTO> update = productService.getProductInfo(id);
-        return ResponseEntity.status(HttpStatus.OK).body(update);
-    }
     /**
      * UPDATE ( PUT vs PATCH )
      * PUT : 리소스 전체를 변경, cf) id, nickname, email 있을 때 nickname만 변경하면 id, email 값은 null 값이 된다.

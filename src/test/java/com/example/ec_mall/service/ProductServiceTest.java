@@ -31,7 +31,6 @@ class ProductServiceTest {
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
     private UpdateProductRequestDTO updateProductRequestDTO;
-    private UpdateProductDao updateProductDao;
 
     @BeforeEach
     void init() {
@@ -43,7 +42,7 @@ class ProductServiceTest {
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.JEAN)
+                .smallCategory(categoryEnum.PANTS.getLong())
                 .build();
     }
     @Test
@@ -72,7 +71,7 @@ class ProductServiceTest {
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.T_SHIRT)
+                .smallCategory(categoryEnum.TOP.getLong())
                 .build();
 
         UpdateProductDao updateProductDao = UpdateProductDao.builder()
@@ -88,16 +87,22 @@ class ProductServiceTest {
                 .smallCategory(updateProductRequestDTO.getSmallCategory())
                 .updatedBy("admin")
                 .build();
+        /**
+         *  1. 수정 서비스 실행시 먼저 상품 조회될 때 List 반환
+         *  2. 수정 서비스 실행시 조회되고 실제 상품 수정 성공시 아무 것도 하지 않는다.
+         *  3. 서비스 실행후 ProductMapper.updateProduct() 가 한번이라도 실행됐는지 검증한다.
+         */
 
         //when
+        when(productMapper.findProductInfoById(1L)).thenReturn(List.of(productRequestDTO));
+        doNothing().when(productMapper).updateProduct(updateProductDao);
         productService.updateProduct(updateProductRequestDTO, 1L);
-
         //then
         verify(productMapper, atLeastOnce()).updateProduct(updateProductDao);
     }
 
     @Test
-    @DisplayName("상품 수정 변경 전 값과 비교.")
+    @DisplayName("상품 수정 변경 전 값(상품명)과 비교.")
     void updateExpectedName(){
         ProductRequestDTO before = ProductRequestDTO.builder()
                 .name("test1")
@@ -107,10 +112,10 @@ class ProductServiceTest {
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.JEAN)
+                .smallCategory(categoryEnum.TOP.getLong())
                 .build();
 
-        UpdateProductDao after = UpdateProductDao.builder()
+        UpdateProductRequestDTO update = UpdateProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
                 .size(sizeEnum.S)
@@ -118,35 +123,42 @@ class ProductServiceTest {
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.JEAN)
+                .smallCategory(categoryEnum.TOP.getLong())
                 .build();
 
+        UpdateProductDao after = UpdateProductDao.builder()
+                .productId(2L)
+                .categoryId(0L)
+                .name("테스트1")
+                .price(50000)
+                .size(sizeEnum.S)
+                .stock(30)
+                .info("상품 상세 설명입니다!")
+                .imagesUrl("/product/images/test1.jpg")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.TOP.getLong())
+                .updatedBy("admin")
+                .build();
+        /**
+         * 1. 상품이 있는지 조회해서 before에 저장한다. -> when(productMapper.findProductInfoById())
+         * 2. 수정 성공하면 아무 것도 하지 않는다. -> when(productMapper.updateProduct())
+         * 3. 조회한 값과 수정 기댓값을 비교한다. -> 같지 않아야 테스트 성공 , assertNotEquals(Expected, Actual)
+         *  - 조회한 값 : beforeList.get().getName()
+         *  - 수정 기댓 값 : after.getName()
+         */
         when(productMapper.findProductInfoById(2L)).thenReturn(List.of(before));
-        List<ProductRequestDTO> findById = productService.getProductInfo(2L);
-        assertNotEquals(after.getName(), findById.get(0).getName());
+        doNothing().when(productMapper).updateProduct(after);
+
+        List<ProductRequestDTO> beforeList = productMapper.findProductInfoById(2L);
+        productService.updateProduct(update, 2L);
+
+        assertNotEquals(after.getName(), beforeList.get(0).getName());
     }
 
     @Test
     @DisplayName("SQL 혹은 Data 에러시 수정 실패")
     void updateFail(){
-        UpdateProductRequestDTO update = UpdateProductRequestDTO.builder()
-                .name("test1")
-                .price(12000)
-                .stock(12)
-                .size(sizeEnum.L)
-                .imagesUrl("/test/img")
-                .bigCategory(categoryEnum.PANTS)
-                .smallCategory(categoryEnum.JEAN)
-                .info("테스트 정보")
-                .build();
-        doThrow(DataIntegrityViolationException.class).when(productMapper).updateProduct(updateProductDao);
-        assertThrows(DataIntegrityViolationException.class, () -> productService.updateProduct(update, 1L));
-    }
-
-    @Test
-    @DisplayName("업데이트 수정시 상품이 없는 경우")
-    void notFoundProduct(){
-        UpdateProductRequestDTO updateProduct = UpdateProductRequestDTO.builder()
+        ProductRequestDTO before = ProductRequestDTO.builder()
                 .name("test1")
                 .price(50000)
                 .size(sizeEnum.S)
@@ -154,10 +166,46 @@ class ProductServiceTest {
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.JEAN)
+                .smallCategory(categoryEnum.TOP.getLong())
                 .build();
 
+        UpdateProductRequestDTO update = UpdateProductRequestDTO.builder()
+                .name("테스트1")
+                .price(50000)
+                .size(sizeEnum.S)
+                .stock(30)
+                .info("상품 상세 설명입니다!")
+                .imagesUrl("/product/images/test1.jpg")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.TOP.getLong())
+                .build();
+
+        UpdateProductDao after = UpdateProductDao.builder()
+                .productId(1L)
+                .categoryId(0L)
+                .name("테스트1")
+                .price(50000)
+                .size(sizeEnum.S)
+                .stock(30)
+                .info("상품 상세 설명입니다!")
+                .imagesUrl("/product/images/test1.jpg")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.TOP.getLong())
+                .updatedBy("admin")
+                .build();
+
+        when(productMapper.findProductInfoById(1L)).thenReturn(List.of(before));
+        doThrow(DataIntegrityViolationException.class).when(productMapper).updateProduct(after);
+        assertThrows(DataIntegrityViolationException.class, () -> productService.updateProduct(update,1L));
+    }
+
+    @Test
+    @DisplayName("업데이트 수정시 상품이 없는 경우")
+    void notFoundProduct(){
+        /**
+         * 1.수정전 조회시 상품 없는 경우 Exception 발생
+         */
         when(productMapper.findProductInfoById(1L)).thenThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT));
-        assertThrows(APIException.class, () -> productService.updateProduct(updateProduct, 1L));
+        assertThrows(APIException.class, () -> productMapper.findProductInfoById(1L));
     }
 }
