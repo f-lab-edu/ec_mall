@@ -1,12 +1,10 @@
 package com.example.ec_mall.dao;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @Builder
 public class ProductImagesDao {
     private long productImagesId;       // 상품 이미지 ID

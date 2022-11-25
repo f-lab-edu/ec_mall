@@ -11,6 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -31,8 +34,8 @@ class ProductServiceTest {
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.Top)
-                .smallCategory("반팔")
+                .bigCategory(categoryEnum.TOP)
+                .smallCategory(categoryEnum.TOP.getShort())
                 .build();
     }
     @Test
@@ -47,5 +50,19 @@ class ProductServiceTest {
         verify(productMapper, times(1)).addProduct(any());
         verify(productMapper, times(1)).addProductImages(any());
         verify(productMapper, times(1)).addProductCategory(any());
+    }
+    @Test
+    @DisplayName("상품 삭제 서비스 호출 시 SQL이 무조건 한번 호출된다.")
+    void deleteProduct(){
+        doNothing().when(productMapper).deleteProduct(anyLong());
+        productService.deleteProduct(1L);
+        verify(productMapper, times(1)).deleteProduct(anyLong());
+    }
+    @Test
+    @DisplayName("DB 오류 발생 시 상품 삭제 서비스는 실패해야 한다.")
+    void deleteProductException() {
+        doThrow(DataIntegrityViolationException.class).when(productMapper).deleteProduct(anyLong());
+
+        assertThrows(DataIntegrityViolationException.class, () -> productService.deleteProduct(1L));
     }
 }
