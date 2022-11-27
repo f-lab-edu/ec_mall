@@ -150,14 +150,74 @@ class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("상품 수정 실패 : Null 이거나 유효하지 않은 값들이 입력됐을때")
-    void updateProductFail() throws Exception {
+    @DisplayName("상품명과 상품 상세 설명의 글자수가 45자, 100자가 넘어갈 경우 실패해야한다.")
+    void updateProductStringLimit() throws Exception {
+        updateProductRequestDTO = UpdateProductRequestDTO.builder()
+                .name("상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.")
+                .stock(10)
+                .size(sizeEnum.S)
+                .price(100000)
+                .imagesUrl("/test/test")
+                .bigCategory(categoryEnum.PANTS)
+                .smallCategory(categoryEnum.PANTS.getLong())
+                .info("상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.")
+                .build();
+
+        doNothing().when(productService).updateProduct(updateProductRequestDTO, 29L);
+
+        mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(status().isBadRequest()).andDo(print());
+    }
+    @Test
+    @DisplayName("상품명에 null, 공백이 들어갈 경우 실패해야한다.")
+    void updateProductNameFail() throws Exception {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name(null)
-                .stock(-1)
+                .stock(10)
+                .size(sizeEnum.S)
+                .price(100000)
+                .imagesUrl("/test/test")
+                .bigCategory(categoryEnum.PANTS)
+                .smallCategory(categoryEnum.PANTS.getLong())
+                .info("test")
+                .build();
+
+        doNothing().when(productService).updateProduct(updateProductRequestDTO, 29L);
+
+        mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(status().isBadRequest()).andDo(print());
+    }
+    @Test
+    @DisplayName("재고나 가격에 음수가 들어가면 실패해야한다.")
+    void updateProductNegativeFail() throws Exception {
+        updateProductRequestDTO = UpdateProductRequestDTO.builder()
+                .name("test")
+                .stock(-10)
+                .size(sizeEnum.S)
+                .price(-100000)
+                .imagesUrl("/test/test")
+                .bigCategory(categoryEnum.PANTS)
+                .smallCategory(categoryEnum.PANTS.getLong())
+                .info("test")
+                .build();
+
+        doNothing().when(productService).updateProduct(updateProductRequestDTO, 29L);
+
+        mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(status().isBadRequest()).andDo(print());
+    }
+    @Test
+    @DisplayName("사이즈, 카테고리(big, small), 정보에 Null값이 들어가면 실패해야 한다.")
+    void updateProductNull() throws Exception {
+        updateProductRequestDTO = UpdateProductRequestDTO.builder()
+                .name("test")
+                .stock(10)
                 .size(null)
-                .price(-1)
-                .imagesUrl(null)
+                .price(100000)
+                .imagesUrl("/test/test")
                 .bigCategory(null)
                 .smallCategory(null)
                 .info(null)

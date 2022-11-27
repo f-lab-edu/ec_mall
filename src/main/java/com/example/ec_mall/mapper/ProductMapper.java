@@ -8,7 +8,6 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
     void addProduct(ProductDao product);
-    void addCategory(CategoryDao categoryDao);
     void addProductCategory(ProductCategoryDao productCategory);
     long findCategoryId(long productId);
     void addProductImages(ProductImagesDao productImages);
