@@ -19,12 +19,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProductController.class)
 @Log4j2
@@ -167,6 +167,9 @@ class ProductControllerTest {
 
         mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(content().string(containsString("Status:700")))
+                .andExpect(content().string(containsString("info:상품 상세 설명은 100자 이하로 입력 가능합니다.")))
+                .andExpect(content().string(containsString("name:상품명은 45자 이하로 입력 가능합니다.")))
                 .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
@@ -186,7 +189,9 @@ class ProductControllerTest {
         doNothing().when(productService).updateProduct(updateProductRequestDTO, 29L);
 
         mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(content().string(containsString("Status:700")))
+                .andExpect(content().string(containsString("name:상품명은 필수 입력 값입니다.")))
                 .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
@@ -206,7 +211,10 @@ class ProductControllerTest {
         doNothing().when(productService).updateProduct(updateProductRequestDTO, 29L);
 
         mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(content().string(containsString("Status:700")))
+                .andExpect(content().string(containsString("stock:상품 재고는 0이상의 값만 입력 가능합니다.")))
+                .andExpect(content().string(containsString("price:상품 가격은 0이상의 값만 입력 가능합니다.")))
                 .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
@@ -227,6 +235,11 @@ class ProductControllerTest {
 
         mockMvc.perform(patch("/product/29").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(content().string(containsString("Status:700")))
+                .andExpect(content().string(containsString("bigCategory:카테고리는 필수 입력 값입니다.")))
+                .andExpect(content().string(containsString("smallCategory:소 카테고리는 필수 입력 값입니다.")))
+                .andExpect(content().string(containsString("info:상품 상세 설명은 필수 입력 값입니다.")))
+                .andExpect(content().string(containsString("size:상품 사이즈는 필수 입력 값입니다.")))
                 .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
