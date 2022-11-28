@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -41,7 +41,7 @@ class ProductServiceTest {
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.PANTS.getLong())
+                .smallCategory(categoryEnum.TOP.getShort())
                 .build();
     }
     @Test

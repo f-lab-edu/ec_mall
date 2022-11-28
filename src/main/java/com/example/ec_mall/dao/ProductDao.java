@@ -11,7 +11,7 @@ public class ProductDao {
     private long productId;             // 상품ID
     private String name;                // 상품명
     private int price;                  // 상품 가격
-    private sizeEnum size;                // 상품 사이즈
+    private sizeEnum size;              // 상품 사이즈
     private int stock;                  // 상품 재고
     private String info;                // 상품 설명
     private String createdBy;           // 등록자

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class CategoryDao {
-    private Long categoryId;
+    private long categoryId;
     private categoryEnum bigCategory;
     private String smallCategory;
     private String createdBy;

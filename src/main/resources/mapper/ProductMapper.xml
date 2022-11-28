@@ -6,7 +6,7 @@
         values (#{name}, #{price}, #{size}, #{stock}, #{info}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <insert id="addCategory" parameterType="com.example.ec_mall.dao.CategoryDao" useGeneratedKeys="true" keyProperty="categoryId" >
+    <insert id="addCategory" parameterType="com.example.ec_mall.dao.CategoryDao" useGeneratedKeys="true" keyProperty="categoryId">
         insert into category (category_big, category_small, created_by, created_date, updated_by, updated_date)
         values (#{bigCategory}, #{smallCategory}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>

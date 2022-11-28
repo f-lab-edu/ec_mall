@@ -70,8 +70,7 @@ public class ProductService {
             log.error("is not Existed Product, Product Id : {}", id);
             throw new APIException(ErrorCode.NOT_FOUND_PRODUCT);
         }
-        else {
-            UpdateProductDao update = UpdateProductDao.builder()
+        UpdateProductDao update = UpdateProductDao.builder()
                     .productId(id)
                     .categoryId(productMapper.findCategoryId(id))
                     .name(updateProductRequestDTO.getName())
@@ -84,7 +83,7 @@ public class ProductService {
                     .smallCategory(updateProductRequestDTO.getSmallCategory())
                     .updatedBy("admin")
                     .build();
-            productMapper.updateProduct(update);
-        }
+        productMapper.updateProduct(update);
+
     }
 }

@@ -47,7 +47,7 @@ class ProductControllerTest {
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getLong())
+                .smallCategory(categoryEnum.TOP.getShort())
                 .build();
     }
     @Test
@@ -72,7 +72,7 @@ class ProductControllerTest {
                 .info("상품 상세 설명입니다.")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.PANTS)
-                .smallCategory(categoryEnum.PANTS.getLong())
+                .smallCategory(categoryEnum.PANTS.getShort())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +106,7 @@ class ProductControllerTest {
                 .info("상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
                 .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getLong())
+                .smallCategory(categoryEnum.TOP.getShort())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
