@@ -20,7 +20,7 @@ public class APIExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
-    
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> methodArgumentNotValidException(MethodArgumentNotValidException e){
         ErrorCode errorCode = ErrorCode.INVALID_INPUT_VALUE;

@@ -19,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductMapper productMapper;
-
     public void addProduct(ProductRequestDTO productRequestDTO){
         ProductDao product = ProductDao.builder()
                 .name(productRequestDTO.getName())
@@ -33,8 +32,18 @@ public class ProductService {
 
         productMapper.addProduct(product);
 
+        CategoryDao category = CategoryDao.builder()
+                .bigCategory(productRequestDTO.getBigCategory())
+                .smallCategory(productRequestDTO.getSmallCategory())
+                .createdBy("admin")
+                .updatedBy("admin")
+                .build();
+
+        productMapper.addCategory(category);
+
         ProductCategoryDao productCategory = ProductCategoryDao.builder()
                 .productId(product.getProductId())
+                .categoryId(category.getCategoryId())
                 .createdBy("admin")
                 .updatedBy("admin")
                 .build();
@@ -85,5 +94,8 @@ public class ProductService {
                     .build();
         productMapper.updateProduct(update);
 
+    }
+    public void deleteProduct(Long productId){
+        productMapper.deleteProduct(productId);
     }
 }

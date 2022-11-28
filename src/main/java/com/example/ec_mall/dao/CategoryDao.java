@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class CategoryDao {
-    private long categoryId;
-    private categoryEnum bigCategory;
-    private String smallCategory;
-    private String createdBy;
-    private LocalDateTime createdDate;
-    private String updatedBy;
-    private LocalDateTime updatedDate;
+    private long categoryId;            // 카테고리 ID
+    private categoryEnum bigCategory;   // 카테고리
+    private String smallCategory;       // 상세카테고리
+    private String createdBy;           // 등록자
+    private LocalDateTime createdDate;  // 등록일자
+    private String updatedBy;           // 수정자
+    private LocalDateTime updatedDate;  // 수정일자
 }
