@@ -33,8 +33,18 @@ public class ProductService {
 
         productMapper.addProduct(product);
 
+        CategoryDao category = CategoryDao.builder()
+                .bigCategory(productRequestDTO.getBigCategory())
+                .smallCategory(productRequestDTO.getSmallCategory())
+                .createdBy("admin")
+                .updatedBy("admin")
+                .build();
+
+        productMapper.addCategory(category);
+
         ProductCategoryDao productCategory = ProductCategoryDao.builder()
                 .productId(product.getProductId())
+                .categoryId(category.getCategoryId())
                 .createdBy("admin")
                 .updatedBy("admin")
                 .build();
@@ -50,7 +60,6 @@ public class ProductService {
 
         productMapper.addProductImages(productImages);
     }
-
 
     /**상품 조회
      * @param id 조회할 상품의 product_id
@@ -84,6 +93,9 @@ public class ProductService {
                     .updatedBy("admin")
                     .build();
         productMapper.updateProduct(update);
-
+    }
+    
+    public void deleteProduct(Long productId){
+        productMapper.deleteProduct(productId);
     }
 }

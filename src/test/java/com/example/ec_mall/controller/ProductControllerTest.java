@@ -16,23 +16,33 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import java.util.UUID;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProductController.class)
-@Log4j2
 class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
+    /*
+        @Mock => Mockito.mock()를 줄인 것이며, 가짜 객체를 만들어 사용하는 것을 말한다.
+        @MockBean => mock 객체를 스프링 컨텍스트에 등록하고 @Autowired로 스프링 컨텍스트에 등록된 mock 객체들을 주입받아서 의존성 처리를 해준다.
+        @InjectMocks => @InjectMocks는 의존성이 필요로 하는 필드에 붙이는 어노테이션으로 @Mock이나 @Spy 어노테이션이 붙은 필드를 주입받는다.
+     */
     @MockBean
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
@@ -129,7 +139,6 @@ class ProductControllerTest {
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequestDTO))).andDo(print());
     }
-
     @Test
     @DisplayName("상품 수정 성공")
     void updateProduct() throws Exception {
@@ -263,5 +272,25 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.status").value(901))
                 .andExpect(jsonPath("$.message").value("없는 상품입니다."))
                 .andExpect(status().isBadRequest()).andDo(print());
+    }
+    @Test
+    @DisplayName("관리자가 상품 삭제를 성공한다.")
+    void deleteProduct() throws Exception {
+        doNothing().when(productService).deleteProduct(anyLong());
+
+        mockMvc.perform(delete("/product/delete/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(productRequestDTO)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+    @Test
+    @DisplayName("productId가 잘 못된 경우 상품 삭제를 실패해야한다.")
+    void deleteProductError() throws Exception{
+        doNothing().when(productService).deleteProduct(anyLong());
+
+        mockMvc.perform(delete("/product/delete/TEST"))
+                .andExpect(status().is4xxClientError())
+                .andDo(print());
     }
 }

@@ -7,14 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/product")
 public class ProductController {
-
     private final ProductService productService;
 
     @PostMapping
@@ -34,6 +32,11 @@ public class ProductController {
     @PatchMapping("/{id}")
     public ResponseEntity<UpdateProductRequestDTO> updateProduct(@PathVariable Long id, @RequestBody @Valid UpdateProductRequestDTO updateProductRequestDTO){
         productService.updateProduct(updateProductRequestDTO, id);
+    }
+    
+    @DeleteMapping("/delete/{productId}")
+    public ResponseEntity<Object> deleteProduct(@PathVariable("productId") Long productId){
+        productService.deleteProduct(productId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
