@@ -60,7 +60,6 @@ public class ProductService {
         productMapper.addProductImages(productImages);
     }
 
-
     /**상품 조회
      * @param id 조회할 상품의 product_id
      */
@@ -93,7 +92,6 @@ public class ProductService {
                     .updatedBy("admin")
                     .build();
         productMapper.updateProduct(update);
-
     }
     public void deleteProduct(Long productId){
         productMapper.deleteProduct(productId);

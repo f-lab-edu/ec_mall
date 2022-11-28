@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -99,7 +100,6 @@ class ProductServiceTest {
         //then
         verify(productMapper, atLeastOnce()).updateProduct(updateProductDao);
     }
-
     @Test
     @DisplayName("업데이트 수정시 상품이 없는 경우")
     void notFoundProduct(){
