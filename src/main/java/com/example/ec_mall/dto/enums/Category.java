@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum categoryEnum {
+public enum Category {
     TOP("Short-Top","Long-Top"),
     PANTS("Short-Pants","Long-Pants");
     /**

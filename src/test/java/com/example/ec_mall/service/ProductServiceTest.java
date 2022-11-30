@@ -3,8 +3,8 @@ package com.example.ec_mall.service;
 import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
-import com.example.ec_mall.dto.enums.categoryEnum;
-import com.example.ec_mall.dto.enums.sizeEnum;
+import com.example.ec_mall.dto.enums.Category;
+import com.example.ec_mall.dto.enums.Size;
 import com.example.ec_mall.dto.response.CategoryResponseDTO;
 import com.example.ec_mall.dto.response.ProductImagesResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
@@ -41,12 +41,12 @@ class ProductServiceTest {
         productRequestDTO = ProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
-                .size(sizeEnum.S)
+                .size(Size.S)
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getShort())
+                .bigCategory(Category.TOP)
+                .smallCategory(Category.TOP.getShort())
                 .build();
     }
     @Test
@@ -69,12 +69,12 @@ class ProductServiceTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
-                .size(sizeEnum.S)
+                .size(Size.S)
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getLong())
+                .bigCategory(Category.TOP)
+                .smallCategory(Category.TOP.getLong())
                 .build();
 
         UpdateProductDao updateProductDao = UpdateProductDao.builder()
@@ -96,9 +96,9 @@ class ProductServiceTest {
                 .name("test")
                 .price(100)
                 .info("상품조회")
-                .size(sizeEnum.S)
+                .size(Size.S)
                 .stock(10)
-                .categoryResponseDTO(new CategoryResponseDTO(categoryEnum.PANTS, categoryEnum.PANTS.getLong()))
+                .categoryResponseDTO(new CategoryResponseDTO(Category.PANTS, Category.PANTS.getLong()))
                 .productImagesResponseDTO(new ProductImagesResponseDTO("/test/img"))
                 .build();
 
@@ -131,9 +131,9 @@ class ProductServiceTest {
                 .name("test")
                 .price(100)
                 .info("상품조회")
-                .size(sizeEnum.S)
+                .size(Size.S)
                 .stock(10)
-                .categoryResponseDTO(new CategoryResponseDTO(categoryEnum.PANTS, categoryEnum.PANTS.getLong()))
+                .categoryResponseDTO(new CategoryResponseDTO(Category.PANTS, Category.PANTS.getLong()))
                 .productImagesResponseDTO(new ProductImagesResponseDTO("/test/img"))
                 .build();
 

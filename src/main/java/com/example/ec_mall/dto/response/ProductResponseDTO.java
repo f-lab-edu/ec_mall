@@ -1,6 +1,6 @@
 package com.example.ec_mall.dto.response;
 
-import com.example.ec_mall.dto.enums.sizeEnum;
+import com.example.ec_mall.dto.enums.Size;
 import lombok.*;
 
 @Builder
@@ -11,7 +11,7 @@ public class ProductResponseDTO {
     private long productId;
     private String name;
     private int price;
-    private sizeEnum size;
+    private Size size;
     private int stock;
     private String info;
     private CategoryResponseDTO categoryResponseDTO;
