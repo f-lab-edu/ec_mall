@@ -30,23 +30,6 @@
         WHERE product_id = #{productId};
     </select>
 
-    <select id="findProductInfoById" resultType="com.example.ec_mall.dao.UpdateProductDao">
-        select A.product_id,
-               C.category_id,
-               A.name,
-               A.price,
-               A.size,
-               A.stock,
-               A.info,
-               D.images_url,
-               C.category_big,
-               C.category_small
-        FROM product AS A LEFT JOIN product_category AS B ON A.product_id = B.product_id
-                          LEFT JOIN category AS C ON B.category_id = C.category_id
-                          LEFT JOIN product_images AS D ON A.product_id = D.product_id
-        where A.product_id = #{productId}
-    </select>
-
     <select id="findByProductId" resultMap="productInfo">
         select A.product_id,
                A.name,
