@@ -1,10 +1,13 @@
 package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.UpdateProductDao;
-import com.example.ec_mall.dto.ProductRequestDTO;
-import com.example.ec_mall.dto.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.request.ProductRequestDTO;
+import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
+import com.example.ec_mall.dto.response.CategoryResponseDTO;
+import com.example.ec_mall.dto.response.ProductImagesResponseDTO;
+import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.ProductMapper;
@@ -20,7 +23,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.springframework.dao.DataIntegrityViolationException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -32,6 +34,7 @@ class ProductServiceTest {
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
     private UpdateProductRequestDTO updateProductRequestDTO;
+    private ProductResponseDTO productResponseDTO;
 
     @BeforeEach
     void init() {
@@ -88,7 +91,18 @@ class ProductServiceTest {
                 .updatedBy("admin")
                 .build();
 
-        when(productMapper.findProductInfoById(1L)).thenReturn(List.of(productRequestDTO));
+        productResponseDTO = ProductResponseDTO.builder()
+                .productId(1L)
+                .name("test")
+                .price(100)
+                .info("상품조회")
+                .size(sizeEnum.S)
+                .stock(10)
+                .categoryResponseDTO(new CategoryResponseDTO(categoryEnum.PANTS, categoryEnum.PANTS.getLong()))
+                .productImagesResponseDTO(new ProductImagesResponseDTO("/test/img"))
+                .build();
+
+        when(productMapper.findByProductId(1L)).thenReturn(List.of(productResponseDTO));
         doNothing().when(productMapper).updateProduct(updateProductDao);
         /**
          *  1. 수정 서비스 실행시 먼저 상품 조회될 때 List 반환
@@ -106,8 +120,34 @@ class ProductServiceTest {
         /**
          * 1.수정전 조회시 상품 없는 경우 Exception 발생
          */
-        when(productMapper.findProductInfoById(1L)).thenThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT));
-        assertThrows(APIException.class, () -> productMapper.findProductInfoById(1L));
+        when(productMapper.findByProductId(1L)).thenThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT));
+        assertThrows(APIException.class, () -> productMapper.findByProductId(1L));
+    }
+    @Test
+    @DisplayName("조회 성공시 SQL 호출확인")
+    void getProductSuccess(){
+        productResponseDTO = ProductResponseDTO.builder()
+                .productId(1L)
+                .name("test")
+                .price(100)
+                .info("상품조회")
+                .size(sizeEnum.S)
+                .stock(10)
+                .categoryResponseDTO(new CategoryResponseDTO(categoryEnum.PANTS, categoryEnum.PANTS.getLong()))
+                .productImagesResponseDTO(new ProductImagesResponseDTO("/test/img"))
+                .build();
+
+        when(productMapper.findByProductId(1L)).thenReturn(List.of(productResponseDTO));
+
+        productService.getProduct(1L);
+
+        verify(productMapper, times(1)).findByProductId(1L);
+    }
+    @Test
+    @DisplayName("조회 실패시 Exception 발생")
+    void getProductFail(){
+        when(productMapper.findByProductId(1L)).thenThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT));
+        assertThrows(APIException.class, () -> productMapper.findByProductId(1L));
     }
     @Test
     @DisplayName("상품 삭제 서비스 호출 시 SQL이 무조건 한번 호출된다.")
