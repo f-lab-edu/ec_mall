@@ -23,8 +23,8 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     @GetMapping("/{id}")
-    public ResponseEntity<List<ProductResponseDTO>> getProduct(@PathVariable Long id){
-        List<ProductResponseDTO> productResponseDTO = productService.getProduct(id);
+    public ResponseEntity<List<ProductResponseDTO.ResponseDTO>> getProduct(@PathVariable Long id){
+        List<ProductResponseDTO.ResponseDTO> productResponseDTO = productService.getProduct(id);
         return ResponseEntity.status(HttpStatus.OK).body(productResponseDTO);
     }
 

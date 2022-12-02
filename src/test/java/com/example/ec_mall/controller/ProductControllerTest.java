@@ -2,10 +2,9 @@ package com.example.ec_mall.controller;
 
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
-import com.example.ec_mall.dto.enums.Category;
-import com.example.ec_mall.dto.enums.Size;
+import com.example.ec_mall.dto.enums.ProductCategory;
+import com.example.ec_mall.dto.enums.ProductSize;
 import com.example.ec_mall.dto.response.CategoryResponseDTO;
-import com.example.ec_mall.dto.response.ProductImagesResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
@@ -55,12 +54,12 @@ class ProductControllerTest {
         productRequestDTO = ProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
-                .size(Size.M)
+                .size(ProductSize.M)
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(Category.TOP)
-                .smallCategory(Category.TOP.getShort())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getShort())
                 .build();
     }
     @Test
@@ -80,12 +79,12 @@ class ProductControllerTest {
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
                 .name(null)
                 .price(50000)
-                .size(Size.M)
+                .size(ProductSize.M)
                 .stock(150)
                 .info("상품 상세 설명입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(Category.PANTS)
-                .smallCategory(Category.PANTS.getShort())
+                .bigCategory(ProductCategory.PANTS)
+                .smallCategory(ProductCategory.PANTS.getShort())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -114,12 +113,12 @@ class ProductControllerTest {
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
                 .name("테스트")
                 .price(-50000)
-                .size(Size.M)
+                .size(ProductSize.M)
                 .stock(-150)
                 .info("상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(Category.TOP)
-                .smallCategory(Category.TOP.getShort())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getShort())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -131,12 +130,12 @@ class ProductControllerTest {
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
                 .name("상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.")
                 .price(32000)
-                .size(Size.M)
+                .size(ProductSize.M)
                 .stock(150)
                 .info("상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(Category.TOP)
-                .smallCategory(Category.TOP.getLong())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getLong())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -150,10 +149,10 @@ class ProductControllerTest {
                 .name("test")
                 .price(1000)
                 .stock(12)
-                .size(Size.L)
+                .size(ProductSize.L)
                 .imagesUrl("/test/img")
-                .bigCategory(Category.TOP)
-                .smallCategory(Category.PANTS.getLong())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.PANTS.getLong())
                 .info("테스트 정보")
                 .build();
 
@@ -168,11 +167,11 @@ class ProductControllerTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.")
                 .stock(10)
-                .size(Size.S)
+                .size(ProductSize.S)
                 .price(100000)
                 .imagesUrl("/test/test")
-                .bigCategory(Category.PANTS)
-                .smallCategory(Category.PANTS.getLong())
+                .bigCategory(ProductCategory.PANTS)
+                .smallCategory(ProductCategory.PANTS.getLong())
                 .info("상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.")
                 .build();
 
@@ -191,11 +190,11 @@ class ProductControllerTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name(null)
                 .stock(10)
-                .size(Size.S)
+                .size(ProductSize.S)
                 .price(100000)
                 .imagesUrl("/test/test")
-                .bigCategory(Category.PANTS)
-                .smallCategory(Category.PANTS.getLong())
+                .bigCategory(ProductCategory.PANTS)
+                .smallCategory(ProductCategory.PANTS.getLong())
                 .info("test")
                 .build();
 
@@ -213,11 +212,11 @@ class ProductControllerTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("test")
                 .stock(-10)
-                .size(Size.S)
+                .size(ProductSize.S)
                 .price(-100000)
                 .imagesUrl("/test/test")
-                .bigCategory(Category.PANTS)
-                .smallCategory(Category.PANTS.getLong())
+                .bigCategory(ProductCategory.PANTS)
+                .smallCategory(ProductCategory.PANTS.getLong())
                 .info("test")
                 .build();
 
@@ -261,10 +260,10 @@ class ProductControllerTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("test")
                 .stock(12)
-                .size(Size.S)
+                .size(ProductSize.S)
                 .imagesUrl("/test/img")
-                .bigCategory(Category.TOP)
-                .smallCategory(Category.TOP.getLong())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getLong())
                 .info("테스트 정보")
                 .build();
 
@@ -300,20 +299,20 @@ class ProductControllerTest {
     @Test
     @DisplayName("상품 조회 성공")
     void getProduct() throws Exception {
-        ProductResponseDTO productResponseDTO = ProductResponseDTO.builder()
+        ProductResponseDTO.ResponseDTO response = ProductResponseDTO.ResponseDTO.builder()
                 .productId(31L)
                 .name("test")
                 .price(1000)
                 .stock(12)
-                .size(Size.L)
+                .size(ProductSize.L)
                 .info("테스트 정보")
-                .categoryResponseDTO(new CategoryResponseDTO(Category.PANTS, Category.PANTS.getShort()))
-                .productImagesResponseDTO(new ProductImagesResponseDTO("/test/img"))
+                .categoryResponseDTO(new CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getShort()))
+                .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO("test/etes.img"))
                 .build();
 
-        when(productService.getProduct(31L)).thenReturn(List.of(productResponseDTO));
+        when(productService.getProduct(31L)).thenReturn(List.of(response));
         mockMvc.perform(get("/product/31").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(productResponseDTO))).andExpect(status().isOk()).andDo(print());
+                .content(objectMapper.writeValueAsString(response))).andExpect(status().isOk()).andDo(print());
     }
     @Test
     @DisplayName("상품 없을 시 Exception 발생 ( Status : 901, Message : 없는 상품입니다.)")

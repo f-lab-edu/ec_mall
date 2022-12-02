@@ -1,5 +1,5 @@
 package com.example.ec_mall.dto.enums;
 
-public enum Size {
+public enum ProductSize {
     S, M, L, XL;
 }

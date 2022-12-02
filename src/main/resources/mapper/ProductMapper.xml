@@ -54,14 +54,14 @@
         <result column="stock" property="stock"/>
         <result column="info" property="info"/>
         <collection property="categoryResponseDTO" resultMap="categoryInfo"/>
-        <collection property="productImagesResponseDTO" resultMap="productImagesInfo"/>
+        <collection property="imagesUrl" resultMap="productImagesInfo"/>
     </resultMap>
     <resultMap id="categoryInfo" type="com.example.ec_mall.dto.response.CategoryResponseDTO">
         <id column="category_id" property="categoryId"/>
         <result column="category_big" property="bigCategory"/>
         <result column="category_small" property="smallCategory"/>
     </resultMap>
-    <resultMap id="productImagesInfo" type="com.example.ec_mall.dto.response.ProductImagesResponseDTO">
+    <resultMap id="productImagesInfo" type="com.example.ec_mall.dto.response.ProductResponseDTO$ProductImagesResponseDTO">
         <id column="product_images_id" property="productImagesId"/>
         <result column="images_url" property="imagesUrl"/>
     </resultMap>

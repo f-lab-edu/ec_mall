@@ -3,7 +3,7 @@ package com.example.ec_mall.service;
 import com.example.ec_mall.dao.*;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
-import com.example.ec_mall.dto.response.ProductResponseDTO;
+import com.example.ec_mall.dto.response.ProductResponseDTO.ResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.ProductMapper;
@@ -65,7 +65,7 @@ public class ProductService {
      * 상품 조회
      * @param id 조회할 상품의 product_id
      */
-    public List<ProductResponseDTO> getProduct(long id){
+    public List<ResponseDTO> getProduct(long id){
         return productMapper.findByProductId(id);
     }
 

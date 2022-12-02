@@ -1,7 +1,7 @@
 package com.example.ec_mall.dto.request;
 
-import com.example.ec_mall.dto.enums.Category;
-import com.example.ec_mall.dto.enums.Size;
+import com.example.ec_mall.dto.enums.ProductCategory;
+import com.example.ec_mall.dto.enums.ProductSize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +26,7 @@ public class UpdateProductRequestDTO {
     private int price;
 
     @NotNull(message = "상품 사이즈는 필수 입력 값입니다.")
-    private Size size;
+    private ProductSize size;
 
     @NotNull(message = "상품 재고는 필수 입력 값입니다.")
     @PositiveOrZero(message = "상품 재고는 0이상의 값만 입력 가능합니다.")
@@ -40,7 +40,7 @@ public class UpdateProductRequestDTO {
     private String imagesUrl;
 
     @NotNull(message = "카테고리는 필수 입력 값입니다.")
-    private Category bigCategory;
+    private ProductCategory bigCategory;
 
     @NotNull(message = "소 카테고리는 필수 입력 값입니다.")
     private String smallCategory;

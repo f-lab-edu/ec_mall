@@ -17,6 +17,6 @@ public interface ProductMapper {
     long findCategoryId(long productId);
     void addProductImages(ProductImagesDao productImages);
     void deleteProduct(long productId);
-    List<ProductResponseDTO> findByProductId(long productId);
+    List<ProductResponseDTO.ResponseDTO> findByProductId(long productId);
     void updateProduct(UpdateProductDao updateProductDao);
 }

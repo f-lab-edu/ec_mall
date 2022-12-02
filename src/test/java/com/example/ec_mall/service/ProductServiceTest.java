@@ -3,10 +3,9 @@ package com.example.ec_mall.service;
 import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
-import com.example.ec_mall.dto.enums.Category;
-import com.example.ec_mall.dto.enums.Size;
+import com.example.ec_mall.dto.enums.ProductCategory;
+import com.example.ec_mall.dto.enums.ProductSize;
 import com.example.ec_mall.dto.response.CategoryResponseDTO;
-import com.example.ec_mall.dto.response.ProductImagesResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
@@ -41,12 +40,12 @@ class ProductServiceTest {
         productRequestDTO = ProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
-                .size(Size.S)
+                .size(ProductSize.S)
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(Category.TOP)
-                .smallCategory(Category.TOP.getShort())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getShort())
                 .build();
     }
     @Test
@@ -69,12 +68,12 @@ class ProductServiceTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
-                .size(Size.S)
+                .size(ProductSize.S)
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(Category.TOP)
-                .smallCategory(Category.TOP.getLong())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getLong())
                 .build();
 
         UpdateProductDao updateProductDao = UpdateProductDao.builder()
@@ -91,18 +90,17 @@ class ProductServiceTest {
                 .updatedBy("admin")
                 .build();
 
-        productResponseDTO = ProductResponseDTO.builder()
+        ProductResponseDTO.ResponseDTO responseDTO= ProductResponseDTO.ResponseDTO.builder()
                 .productId(1L)
                 .name("test")
                 .price(100)
                 .info("상품조회")
-                .size(Size.S)
+                .size(ProductSize.S)
                 .stock(10)
-                .categoryResponseDTO(new CategoryResponseDTO(Category.PANTS, Category.PANTS.getLong()))
-                .productImagesResponseDTO(new ProductImagesResponseDTO("/test/img"))
+                .categoryResponseDTO(new CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getLong()))
+                .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO())
                 .build();
-
-        when(productMapper.findByProductId(1L)).thenReturn(List.of(productResponseDTO));
+        when(productMapper.findByProductId(1L)).thenReturn(List.of(responseDTO));
         doNothing().when(productMapper).updateProduct(updateProductDao);
         /**
          *  1. 수정 서비스 실행시 먼저 상품 조회될 때 List 반환
@@ -126,18 +124,17 @@ class ProductServiceTest {
     @Test
     @DisplayName("조회 성공시 SQL 호출확인")
     void getProductSuccess(){
-        productResponseDTO = ProductResponseDTO.builder()
+        ProductResponseDTO.ResponseDTO responseDTO = ProductResponseDTO.ResponseDTO.builder()
                 .productId(1L)
                 .name("test")
                 .price(100)
                 .info("상품조회")
-                .size(Size.S)
+                .size(ProductSize.S)
                 .stock(10)
-                .categoryResponseDTO(new CategoryResponseDTO(Category.PANTS, Category.PANTS.getLong()))
-                .productImagesResponseDTO(new ProductImagesResponseDTO("/test/img"))
+                .categoryResponseDTO(new CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getLong()))
+                .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO("test/test.img"))
                 .build();
-
-        when(productMapper.findByProductId(1L)).thenReturn(List.of(productResponseDTO));
+        when(productMapper.findByProductId(1L)).thenReturn(List.of(responseDTO));
 
         productService.getProduct(1L);
 
