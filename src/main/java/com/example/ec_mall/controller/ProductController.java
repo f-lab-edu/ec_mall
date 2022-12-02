@@ -1,7 +1,10 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dto.ProductRequestDTO;
-import com.example.ec_mall.dto.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.ProductPageDTO;
+import com.example.ec_mall.dto.request.ProductRequestDTO;
+import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.response.ProductResponseDTO;
+import com.example.ec_mall.paging.PagingResponse;
 import com.example.ec_mall.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,8 +39,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{productId}")
-    public ResponseEntity<Object> deleteProduct(@PathVariable("productId") Long productId){
+    public ResponseEntity<Object> deleteProduct(@PathVariable("productId") Long productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+   @GetMapping("/main")
+   public ResponseEntity<PagingResponse<ProductResponseDTO>> productPage(@ModelAttribute ProductPageDTO productPageDTO){
+        PagingResponse<ProductResponseDTO> product = productService.productPage(productPageDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 }

@@ -21,21 +21,53 @@
         values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <select id="product" resultType="com.example.ec_mall.dao.ProductDao">
-        SELECT * FROM product;
-    </select>
-
-    <delete id="deleteProduct">
-        DELETE A, B, C, D FROM product AS A LEFT JOIN product_category AS B ON A.product_id = B.product_id
-        LEFT JOIN category AS C ON B.category_id = C.category_id
-        LEFT JOIN product_images AS D ON A.product_id = D.product_id
-        WHERE A.product_id = #{productId}
-    </delete>
-
     <select id="findCategoryId" resultType="long">
         SELECT category_id FROM product_category
         WHERE product_id = #{productId};
     </select>
+
+    <select id="productPage" resultMap="productInfo">
+        SELECT A.product_id,
+               C.category_id,
+               A.name,
+               A.price,
+               A.size,
+               A.stock,
+               A.info,
+               D.images_url,
+               C.category_big,
+               C.category_small
+        FROM product AS A LEFT JOIN product_category AS B ON A.product_id = B.product_id
+                          LEFT JOIN category AS C ON B.category_id = C.category_id
+                          LEFT JOIN product_images AS D ON A.product_id = D.product_id
+        ORDER BY product_id
+        LIMIT #{pagination.limitStart}, #{recordSize}
+    </select>
+
+    <select id="productPageCount" resultType="int">
+        SELECT COUNT(*)
+        FROM product
+    </select>
+
+    <resultMap id="productInfo" type="com.example.ec_mall.dto.response.ProductResponseDTO">
+        <id column="product_id" property="productId"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+        <result column="size" property="size"/>
+        <result column="stock" property="stock"/>
+        <result column="info" property="info"/>
+        <collection property="categoryResponseDTO" resultMap="categoryInfo"/>
+        <collection property="productImagesResponseDTO" resultMap="productImagesInfo"/>
+    </resultMap>
+    <resultMap id="categoryInfo" type="com.example.ec_mall.dto.response.CategoryResponseDTO">
+        <id column="category_id" property="categoryId"/>
+        <result column="category_big" property="bigCategory"/>
+        <result column="category_small" property="smallCategory"/>
+    </resultMap>
+    <resultMap id="productImagesInfo" type="com.example.ec_mall.dto.response.ProductImagesResponseDTO">
+        <id column="product_images_id" property="productImagesId"/>
+        <result column="images_url" property="imagesUrl"/>
+    </resultMap>
 
     <select id="findProductById" resultType="com.example.ec_mall.dao.UpdateProductDao">
         select A.product_id,
