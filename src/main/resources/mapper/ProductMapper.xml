@@ -30,9 +30,8 @@
         WHERE product_id = #{productId};
     </select>
 
-    <select id="findProductById" resultType="com.example.ec_mall.dao.UpdateProductDao">
+    <select id="findByProductId" resultMap="productInfo">
         select A.product_id,
-               C.category_id,
                A.name,
                A.price,
                A.size,
@@ -46,6 +45,26 @@
                           LEFT JOIN product_images AS D ON A.product_id = D.product_id
         where A.product_id = #{productId}
     </select>
+    
+    <resultMap id="productInfo" type="ProductResponseDTO">
+        <id column="product_id" property="productId"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+        <result column="size" property="size"/>
+        <result column="stock" property="stock"/>
+        <result column="info" property="info"/>
+        <collection property="categoryResponseDTO" resultMap="categoryInfo"/>
+        <collection property="imagesUrl" resultMap="productImagesInfo"/>
+    </resultMap>
+    <resultMap id="categoryInfo" type="com.example.ec_mall.dto.response.CategoryResponseDTO">
+        <id column="category_id" property="categoryId"/>
+        <result column="category_big" property="bigCategory"/>
+        <result column="category_small" property="smallCategory"/>
+    </resultMap>
+    <resultMap id="productImagesInfo" type="com.example.ec_mall.dto.response.ProductResponseDTO$ProductImagesResponseDTO">
+        <id column="product_images_id" property="productImagesId"/>
+        <result column="images_url" property="imagesUrl"/>
+    </resultMap>
 
     <update id="updateProduct" parameterType="com.example.ec_mall.dao.UpdateProductDao">
         update product
@@ -57,7 +76,7 @@
             <if test="info != null">info = #{info},</if>
             <if test="updatedBy != null">updated_by = #{updatedBy},</if>
             updated_date = now()
-        where A.product_id = #{productId}
+        where product_id = #{productId};
 
         update category
         set
@@ -69,9 +88,9 @@
 
         update product_images
         set
-            <if test="imagesUrl != null">images_url = #{imagesUrl},</if>
-            updated_by = #{updatedBy},
-            updated_date = now()
+        <if test="imagesUrl != null">images_url = #{imagesUrl},</if>
+        updated_by = #{updatedBy},
+        updated_date = now()
         where product_id = #{productId};
     </update>
 

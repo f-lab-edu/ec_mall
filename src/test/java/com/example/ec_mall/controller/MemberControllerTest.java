@@ -1,6 +1,6 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dto.MemberRequestDTO;
+import com.example.ec_mall.dto.request.MemberRequestDTO;
 import com.example.ec_mall.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

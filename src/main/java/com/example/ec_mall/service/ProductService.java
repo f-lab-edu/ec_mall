@@ -1,8 +1,9 @@
 package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.*;
-import com.example.ec_mall.dto.ProductRequestDTO;
-import com.example.ec_mall.dto.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.request.ProductRequestDTO;
+import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.response.ProductResponseDTO.ResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.ProductMapper;
@@ -60,11 +61,12 @@ public class ProductService {
         productMapper.addProductImages(productImages);
     }
 
-    /**상품 조회
+    /**
+     * 상품 조회
      * @param id 조회할 상품의 product_id
      */
-    public List<ProductRequestDTO> getProductInfo(Long id){
-        return productMapper.findProductInfoById(id);
+    public List<ResponseDTO> getProduct(long id){
+        return productMapper.findByProductId(id);
     }
 
     /**
@@ -73,7 +75,7 @@ public class ProductService {
      * @param id 변경할 상품의 product_id
      */
     public void updateProduct(UpdateProductRequestDTO updateProductRequestDTO, Long id){
-        boolean checkProduct = getProductInfo(id).size() == 0;
+        boolean checkProduct = getProduct(id).size() == 0;
         if(checkProduct) {
             log.error("is not Existed Product, Product Id : {}", id);
             throw new APIException(ErrorCode.NOT_FOUND_PRODUCT);

@@ -1,6 +1,6 @@
 package com.example.ec_mall.util;
 
-import com.example.ec_mall.dto.MemberRequestDTO;
+import com.example.ec_mall.dto.request.MemberRequestDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
