@@ -5,7 +5,6 @@ import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
-import com.example.ec_mall.dto.response.CategoryResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
@@ -97,7 +96,7 @@ class ProductServiceTest {
                 .info("상품조회")
                 .size(ProductSize.S)
                 .stock(10)
-                .categoryResponseDTO(new CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getLong()))
+                .categoryResponseDTO(new ProductResponseDTO.CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getLong()))
                 .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO())
                 .build();
         when(productMapper.findByProductId(1L)).thenReturn(List.of(responseDTO));
@@ -131,7 +130,7 @@ class ProductServiceTest {
                 .info("상품조회")
                 .size(ProductSize.S)
                 .stock(10)
-                .categoryResponseDTO(new CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getLong()))
+                .categoryResponseDTO(new ProductResponseDTO.CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getLong()))
                 .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO("test/test.img"))
                 .build();
         when(productMapper.findByProductId(1L)).thenReturn(List.of(responseDTO));

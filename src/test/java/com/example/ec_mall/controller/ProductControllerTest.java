@@ -4,7 +4,6 @@ import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
-import com.example.ec_mall.dto.response.CategoryResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
@@ -306,7 +305,7 @@ class ProductControllerTest {
                 .stock(12)
                 .size(ProductSize.L)
                 .info("테스트 정보")
-                .categoryResponseDTO(new CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getShort()))
+                .categoryResponseDTO(new ProductResponseDTO.CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getShort()))
                 .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO("test/etes.img"))
                 .build();
 
