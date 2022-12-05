@@ -1,8 +1,8 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dto.ProductPageDTO;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.response.ProductPageResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.paging.PagingResponse;
 import com.example.ec_mall.service.ProductService;
@@ -45,8 +45,8 @@ public class ProductController {
     }
 
    @GetMapping("/main")
-   public ResponseEntity<PagingResponse<ProductResponseDTO>> productPage(@ModelAttribute ProductPageDTO productPageDTO){
-        PagingResponse<ProductResponseDTO> product = productService.productPage(productPageDTO);
+   public ResponseEntity<PagingResponse<ProductResponseDTO>> productPage(@ModelAttribute ProductPageResponseDTO productPageResponseDTO){
+        PagingResponse<ProductResponseDTO> product = productService.productPage(productPageResponseDTO);
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 }

@@ -1,9 +1,9 @@
 package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.*;
-import com.example.ec_mall.dto.ProductPageDTO;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.response.ProductPageResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
@@ -106,16 +106,16 @@ public class ProductService {
         productMapper.deleteProduct(productId);
     }
 
-    public PagingResponse<ProductResponseDTO> productPage(ProductPageDTO productPageDTO){
-        int count = productMapper.productPageCount(productPageDTO);
+    public PagingResponse<ProductResponseDTO> productPage(ProductPageResponseDTO productPageResponseDTO){
+        int count = productMapper.productPageCount(productPageResponseDTO);
         if(count < 1){
             return new PagingResponse<>(Collections.emptyList(), null);
         }
 
-        Pagination pagination = new Pagination(count, productPageDTO);
-        productPageDTO.setPagination(pagination);
+        Pagination pagination = new Pagination(count, productPageResponseDTO);
+        productPageResponseDTO.setPagination(pagination);
 
-        List<ProductResponseDTO> list = productMapper.productPage(productPageDTO);
+        List<ProductResponseDTO> list = productMapper.productPage(productPageResponseDTO);
         return new PagingResponse<>(list, pagination);
     }
 }

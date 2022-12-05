@@ -1,11 +1,11 @@
 package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.UpdateProductDao;
-import com.example.ec_mall.dto.ProductPageDTO;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
+import com.example.ec_mall.dto.response.ProductPageResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.ProductMapper;
@@ -32,7 +32,7 @@ class ProductServiceTest {
     private ProductRequestDTO productRequestDTO;
     private UpdateProductRequestDTO updateProductRequestDTO;
     @Mock
-    private ProductPageDTO productPageDTO;
+    private ProductPageResponseDTO productPageResponseDTO;
 
     @BeforeEach
     void init() {
@@ -127,14 +127,14 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품 목록(페이징) 호출 시 SQL 한번 호출되어야 한다.")
     void productPage(){
-        when(productMapper.productPageCount(productPageDTO)).thenReturn(30);
-        productService.productPage(productPageDTO);
-        verify(productMapper, times(1)).productPageCount(productPageDTO);
+        when(productMapper.productPageCount(productPageResponseDTO)).thenReturn(30);
+        productService.productPage(productPageResponseDTO);
+        verify(productMapper, times(1)).productPageCount(productPageResponseDTO);
     }
     @Test
     @DisplayName("부적절한 인자가 넘어올 경우 상품 목록(페이징) 서비스는 실패해야 한다.")
     void productPageException(){
-        doThrow(IllegalArgumentException.class).when(productMapper).productPage(productPageDTO);
-        assertThrows(IllegalArgumentException.class, () -> productMapper.productPage(productPageDTO));
+        doThrow(IllegalArgumentException.class).when(productMapper).productPage(productPageResponseDTO);
+        assertThrows(IllegalArgumentException.class, () -> productMapper.productPage(productPageResponseDTO));
     }
 }
