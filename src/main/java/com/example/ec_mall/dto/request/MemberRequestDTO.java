@@ -1,4 +1,4 @@
-package com.example.ec_mall.dto;
+package com.example.ec_mall.dto.request;
 
 import lombok.*;
 import javax.validation.constraints.*;

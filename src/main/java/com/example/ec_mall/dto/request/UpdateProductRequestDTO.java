@@ -1,15 +1,22 @@
-package com.example.ec_mall.dto;
+package com.example.ec_mall.dto.request;
 
-import com.example.ec_mall.dto.enums.categoryEnum;
-import com.example.ec_mall.dto.enums.sizeEnum;
-import lombok.*;
-import javax.validation.constraints.*;
+import com.example.ec_mall.dto.enums.ProductCategory;
+import com.example.ec_mall.dto.enums.ProductSize;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductRequestDTO {
+public class UpdateProductRequestDTO {
 
     @NotBlank(message = "상품명은 필수 입력 값입니다.")
     @Size(min = 0, max = 45, message = "상품명은 45자 이하로 입력 가능합니다.")
@@ -20,7 +27,7 @@ public class ProductRequestDTO {
     private int price;
 
     @NotNull(message = "상품 사이즈는 필수 입력 값입니다.")
-    private sizeEnum size;
+    private ProductSize size;
 
     @NotNull(message = "상품 재고는 필수 입력 값입니다.")
     @PositiveOrZero(message = "상품 재고는 0이상의 값만 입력 가능합니다.")
@@ -34,7 +41,7 @@ public class ProductRequestDTO {
     private String imagesUrl;
 
     @NotNull(message = "카테고리는 필수 입력 값입니다.")
-    private categoryEnum bigCategory;
+    private ProductCategory bigCategory;
 
     @NotNull(message = "소 카테고리는 필수 입력 값입니다.")
     private String smallCategory;
