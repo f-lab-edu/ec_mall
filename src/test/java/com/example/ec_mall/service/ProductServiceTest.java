@@ -4,14 +4,11 @@ import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.ProductPageDTO;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
-import com.example.ec_mall.dto.enums.categoryEnum;
-import com.example.ec_mall.dto.enums.sizeEnum;
-import com.example.ec_mall.dto.response.ProductResponseDTO;
+import com.example.ec_mall.dto.enums.ProductCategory;
+import com.example.ec_mall.dto.enums.ProductSize;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.ProductMapper;
-import com.example.ec_mall.paging.Pagination;
-import com.example.ec_mall.paging.PagingResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import java.util.List;
-import java.util.concurrent.CompletionException;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -44,12 +39,12 @@ class ProductServiceTest {
         productRequestDTO = ProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
-                .size(sizeEnum.S)
+                .size(ProductSize.S)
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getShort())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getShort())
                 .build();
     }
     @Test
@@ -72,12 +67,12 @@ class ProductServiceTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
-                .size(sizeEnum.S)
+                .size(ProductSize.S)
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getLong())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getLong())
                 .build();
 
         UpdateProductDao updateProductDao = UpdateProductDao.builder()

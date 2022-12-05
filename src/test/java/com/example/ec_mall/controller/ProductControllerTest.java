@@ -2,8 +2,8 @@ package com.example.ec_mall.controller;
 
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
-import com.example.ec_mall.dto.enums.categoryEnum;
-import com.example.ec_mall.dto.enums.sizeEnum;
+import com.example.ec_mall.dto.enums.ProductCategory;
+import com.example.ec_mall.dto.enums.ProductSize;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.ProductService;
@@ -48,12 +48,12 @@ class ProductControllerTest {
         productRequestDTO = ProductRequestDTO.builder()
                 .name("테스트1")
                 .price(50000)
-                .size(sizeEnum.M)
+                .size(ProductSize.M)
                 .stock(30)
                 .info("상품 상세 설명입니다!")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getShort())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getShort())
                 .build();
     }
     @Test
@@ -73,12 +73,12 @@ class ProductControllerTest {
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
                 .name(null)
                 .price(50000)
-                .size(sizeEnum.M)
+                .size(ProductSize.M)
                 .stock(150)
                 .info("상품 상세 설명입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.PANTS)
-                .smallCategory(categoryEnum.PANTS.getShort())
+                .bigCategory(ProductCategory.PANTS)
+                .smallCategory(ProductCategory.PANTS.getShort())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -107,12 +107,12 @@ class ProductControllerTest {
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
                 .name("테스트")
                 .price(-50000)
-                .size(sizeEnum.M)
+                .size(ProductSize.M)
                 .stock(-150)
                 .info("상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getShort())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getShort())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -124,12 +124,12 @@ class ProductControllerTest {
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
                 .name("상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.")
                 .price(32000)
-                .size(sizeEnum.M)
+                .size(ProductSize.M)
                 .stock(150)
                 .info("상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.")
                 .imagesUrl("/product/images/test1.jpg")
-                .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getLong())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getLong())
                 .build();
 
         mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON)
@@ -143,10 +143,10 @@ class ProductControllerTest {
                 .name("test")
                 .price(1000)
                 .stock(12)
-                .size(sizeEnum.L)
+                .size(ProductSize.L)
                 .imagesUrl("/test/img")
-                .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.PANTS.getLong())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.PANTS.getLong())
                 .info("테스트 정보")
                 .build();
 
@@ -161,11 +161,11 @@ class ProductControllerTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.상품명 테스트입니다.")
                 .stock(10)
-                .size(sizeEnum.S)
+                .size(ProductSize.S)
                 .price(100000)
                 .imagesUrl("/test/test")
-                .bigCategory(categoryEnum.PANTS)
-                .smallCategory(categoryEnum.PANTS.getLong())
+                .bigCategory(ProductCategory.PANTS)
+                .smallCategory(ProductCategory.PANTS.getLong())
                 .info("상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.상품 상세 설명 테스트입니다.")
                 .build();
 
@@ -184,11 +184,11 @@ class ProductControllerTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name(null)
                 .stock(10)
-                .size(sizeEnum.S)
+                .size(ProductSize.S)
                 .price(100000)
                 .imagesUrl("/test/test")
-                .bigCategory(categoryEnum.PANTS)
-                .smallCategory(categoryEnum.PANTS.getLong())
+                .bigCategory(ProductCategory.PANTS)
+                .smallCategory(ProductCategory.PANTS.getLong())
                 .info("test")
                 .build();
 
@@ -206,11 +206,11 @@ class ProductControllerTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("test")
                 .stock(-10)
-                .size(sizeEnum.S)
+                .size(ProductSize.S)
                 .price(-100000)
                 .imagesUrl("/test/test")
-                .bigCategory(categoryEnum.PANTS)
-                .smallCategory(categoryEnum.PANTS.getLong())
+                .bigCategory(ProductCategory.PANTS)
+                .smallCategory(ProductCategory.PANTS.getLong())
                 .info("test")
                 .build();
 
@@ -254,10 +254,10 @@ class ProductControllerTest {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
                 .name("test")
                 .stock(12)
-                .size(sizeEnum.S)
+                .size(ProductSize.S)
                 .imagesUrl("/test/img")
-                .bigCategory(categoryEnum.TOP)
-                .smallCategory(categoryEnum.TOP.getLong())
+                .bigCategory(ProductCategory.TOP)
+                .smallCategory(ProductCategory.TOP.getLong())
                 .info("테스트 정보")
                 .build();
 
