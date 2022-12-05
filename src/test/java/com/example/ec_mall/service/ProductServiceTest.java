@@ -1,13 +1,17 @@
 package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.UpdateProductDao;
-import com.example.ec_mall.dto.ProductRequestDTO;
-import com.example.ec_mall.dto.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.ProductPageDTO;
+import com.example.ec_mall.dto.request.ProductRequestDTO;
+import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
+import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.ProductMapper;
+import com.example.ec_mall.paging.Pagination;
+import com.example.ec_mall.paging.PagingResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,15 +19,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import java.util.List;
+import java.util.concurrent.CompletionException;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -35,6 +36,8 @@ class ProductServiceTest {
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
     private UpdateProductRequestDTO updateProductRequestDTO;
+    @Mock
+    private ProductPageDTO productPageDTO;
 
     @BeforeEach
     void init() {
@@ -125,5 +128,18 @@ class ProductServiceTest {
         doThrow(DataIntegrityViolationException.class).when(productMapper).deleteProduct(anyLong());
 
         assertThrows(DataIntegrityViolationException.class, () -> productService.deleteProduct(1L));
+    }
+    @Test
+    @DisplayName("상품 목록(페이징) 호출 시 SQL 한번 호출되어야 한다.")
+    void productPage(){
+        when(productMapper.productPageCount(productPageDTO)).thenReturn(30);
+        productService.productPage(productPageDTO);
+        verify(productMapper, times(1)).productPageCount(productPageDTO);
+    }
+    @Test
+    @DisplayName("부적절한 인자가 넘어올 경우 상품 목록(페이징) 서비스는 실패해야 한다.")
+    void productPageException(){
+        doThrow(IllegalArgumentException.class).when(productMapper).productPage(productPageDTO);
+        assertThrows(IllegalArgumentException.class, () -> productMapper.productPage(productPageDTO));
     }
 }

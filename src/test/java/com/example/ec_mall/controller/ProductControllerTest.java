@@ -1,14 +1,13 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dto.ProductRequestDTO;
-import com.example.ec_mall.dto.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.request.ProductRequestDTO;
+import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.categoryEnum;
 import com.example.ec_mall.dto.enums.sizeEnum;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,8 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -279,10 +276,10 @@ class ProductControllerTest {
         doNothing().when(productService).deleteProduct(anyLong());
 
         mockMvc.perform(delete("/product/delete/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productRequestDTO)))
-                .andExpect(status().isOk())
-                .andDo(print());
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(objectMapper.writeValueAsString(productRequestDTO)))
+               .andExpect(status().isOk())
+               .andDo(print());
     }
     @Test
     @DisplayName("productId가 잘 못된 경우 상품 삭제를 실패해야한다.")
@@ -290,8 +287,16 @@ class ProductControllerTest {
         doNothing().when(productService).deleteProduct(anyLong());
 
         mockMvc.perform(delete("/product/delete/TEST"))
-                .andExpect(status().is4xxClientError())
-                .andDo(print());
+               .andExpect(status().is4xxClientError())
+               .andDo(print());
     }
-
+    @Test
+    @DisplayName("한 페이지에 상품이 20개씩 표시되며 페이징 처리를 성공한다.")
+    void productPage() throws Exception{
+        mockMvc.perform(get("/product/main")
+               .param("limitStart", "1")
+               .param("recordSize", "20"))
+               .andExpect(status().isOk())
+               .andDo(print());
+    }
 }
