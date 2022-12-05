@@ -1,7 +1,7 @@
 package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.MemberDao;
-import com.example.ec_mall.dto.MemberRequestDTO;
+import com.example.ec_mall.dto.request.MemberRequestDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.MemberMapper;
