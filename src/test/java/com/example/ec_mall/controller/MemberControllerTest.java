@@ -27,11 +27,11 @@ public class MemberControllerTest {
 
     @MockBean
     private MemberService memberService;
-    private MemberRequestDTO memberRequestDTO;
+    private MemberRequestDTO.RequestDTO requestDTO;
 
     @BeforeEach
     void init() {
-        memberRequestDTO = MemberRequestDTO.builder()
+        requestDTO = MemberRequestDTO.RequestDTO.builder()
                 .email("test@test.com")
                 .password("testPassword1!")
                 .nickName("asdf")
@@ -41,21 +41,21 @@ public class MemberControllerTest {
     @DisplayName("회원등록 성공")
     void signUpMember() throws Exception{
         mockMvc.perform(post("/member/signUp").contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(memberRequestDTO))).andExpect(status().isCreated());
+                .content(mapper.writeValueAsBytes(requestDTO))).andExpect(status().isCreated());
     }
 
     @Test
     @DisplayName("검증-비밀번호 규칙 위반")
     void invalidPassword() throws Exception{
 
-        memberRequestDTO = MemberRequestDTO.builder()
+        requestDTO = MemberRequestDTO.RequestDTO.builder()
                 .email("test@test.com")
                 .password("1234")
                 .nickName("test")
                 .build();
 
         mockMvc.perform(post("/member/signUp").contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(memberRequestDTO))).andDo(print());
+                .content(mapper.writeValueAsBytes(requestDTO))).andDo(print());
 
     }
 
@@ -63,14 +63,14 @@ public class MemberControllerTest {
     @DisplayName("검증-닉네임 빈 값이면 가입 실패")
     void blankNickname() throws Exception{
 
-        memberRequestDTO = MemberRequestDTO.builder()
+        requestDTO = MemberRequestDTO.RequestDTO.builder()
                 .email("test@test.com")
                 .password("1234")
                 .nickName(null)
                 .build();
 
         mockMvc.perform(post("/member/signUp").contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(memberRequestDTO))).andDo(print());
+                        .content(mapper.writeValueAsBytes(requestDTO))).andDo(print());
 
     }
 }

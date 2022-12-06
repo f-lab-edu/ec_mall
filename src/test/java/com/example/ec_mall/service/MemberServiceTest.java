@@ -47,7 +47,7 @@ public class MemberServiceTest {
      */
     @InjectMocks
     MemberService memberService;
-    MemberRequestDTO memberRequestDTO;
+    MemberRequestDTO.RequestDTO requestDTO;
     MemberDao memberDao;
 
     @Mock
@@ -55,7 +55,7 @@ public class MemberServiceTest {
 
     @BeforeEach
     void setUp(){
-        memberRequestDTO = MemberRequestDTO.builder()
+        requestDTO = MemberRequestDTO.RequestDTO.builder()
                 .email("est@test.com")
                 .nickName("test")
                 .password(SHA256.encrypt("testPassword1!"))
@@ -77,15 +77,15 @@ public class MemberServiceTest {
     void signUpTestFail(){
         when(memberMapper.signUpMember(memberDao)).thenReturn(0);
         assertThat(memberMapper.signUpMember(memberDao)).isEqualTo(0);
-        Assertions.assertThrows(SQLException.class, ()-> memberService.signUpMember(memberRequestDTO));
+        Assertions.assertThrows(SQLException.class, ()-> memberService.signUpMember(requestDTO));
     }
 
     @Test
     @DisplayName("회원가입 실패 : 중복된 이메일")
     void signUpTestEmailCheck(){
-        when(memberMapper.emailCheck(memberRequestDTO.getEmail())).thenReturn(1);
-        Assertions.assertThrows(APIException.class, ()-> memberService.signUpMember(memberRequestDTO));
+        when(memberMapper.emailCheck(requestDTO.getEmail())).thenReturn(1);
+        Assertions.assertThrows(APIException.class, ()-> memberService.signUpMember(requestDTO));
 
-        verify(memberMapper, atLeastOnce()).emailCheck(memberRequestDTO.getEmail());
+        verify(memberMapper, atLeastOnce()).emailCheck(requestDTO.getEmail());
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
@@ -23,8 +24,14 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<Object> signUpMember(@RequestBody @Valid MemberRequestDTO memberRequestDTO) {
+    public ResponseEntity<MemberRequestDTO> signUpMember(@RequestBody @Valid MemberRequestDTO.RequestDTO memberRequestDTO) {
         memberService.signUpMember(memberRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<MemberRequestDTO.LoginDTO> login(@RequestBody @Valid MemberRequestDTO.LoginDTO memberLoginDTO, HttpSession session){
+        memberService.login(memberLoginDTO.getEmail(), memberLoginDTO.getPassword());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

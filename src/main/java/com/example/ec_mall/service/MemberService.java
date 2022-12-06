@@ -18,7 +18,7 @@ public class MemberService {
 
     private final MemberMapper memberMapper;
 
-    public void signUpMember(MemberRequestDTO memberRequestDTO) {
+    public void signUpMember(MemberRequestDTO.RequestDTO memberRequestDTO) {
         MemberDao member = MemberDao.builder()
                 .email(memberRequestDTO.getEmail())
                 .nickName(memberRequestDTO.getNickName())
@@ -52,5 +52,18 @@ public class MemberService {
 
     private boolean isDuplicatedEmail(String email){
         return memberMapper.emailCheck(email) == 1;
+    }
+
+    public MemberRequestDTO.LoginDTO login(String email, String password){
+        String encryptPassword = SHA256.encrypt(password);
+        MemberRequestDTO.LoginDTO memberLoginDTO = memberMapper.findByEmailPassword(email,encryptPassword);
+        if(memberLoginDTO == null){
+            log.error("Invalid Login");
+            throw new APIException(ErrorCode.NOT_FOUND_ACCOUNT);
+        } else if (encryptPassword.equals(memberLoginDTO.getPassword())){
+            //session 저장
+        }
+
+        return memberLoginDTO;
     }
 }
