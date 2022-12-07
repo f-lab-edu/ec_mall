@@ -19,4 +19,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface MemberMapper {
     int signUpMember(MemberDao memberDao);
     int emailCheck(String email);
+    MemberDao findByEmailPassword(String email, String password);
 }

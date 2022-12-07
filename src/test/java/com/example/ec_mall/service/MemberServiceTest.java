@@ -3,10 +3,11 @@ package com.example.ec_mall.service;
 import com.example.ec_mall.dao.MemberDao;
 import com.example.ec_mall.dto.request.MemberRequestDTO;
 import com.example.ec_mall.exception.APIException;
+import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.MemberMapper;
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.ec_mall.util.SHA256;
 import org.junit.jupiter.api.Assertions;
@@ -47,15 +48,16 @@ public class MemberServiceTest {
      */
     @InjectMocks
     MemberService memberService;
-    MemberRequestDTO memberRequestDTO;
+    MemberRequestDTO.RequestDTO requestDTO;
     MemberDao memberDao;
+    MemberRequestDTO.LoginDTO loginDTO;
 
     @Mock
     MemberMapper memberMapper;
 
     @BeforeEach
     void setUp(){
-        memberRequestDTO = MemberRequestDTO.builder()
+        requestDTO = MemberRequestDTO.RequestDTO.builder()
                 .email("est@test.com")
                 .nickName("test")
                 .password(SHA256.encrypt("testPassword1!"))
@@ -77,15 +79,45 @@ public class MemberServiceTest {
     void signUpTestFail(){
         when(memberMapper.signUpMember(memberDao)).thenReturn(0);
         assertThat(memberMapper.signUpMember(memberDao)).isEqualTo(0);
-        Assertions.assertThrows(SQLException.class, ()-> memberService.signUpMember(memberRequestDTO));
+        Assertions.assertThrows(SQLException.class, ()-> memberService.signUpMember(requestDTO));
     }
 
     @Test
     @DisplayName("회원가입 실패 : 중복된 이메일")
     void signUpTestEmailCheck(){
-        when(memberMapper.emailCheck(memberRequestDTO.getEmail())).thenReturn(1);
-        Assertions.assertThrows(APIException.class, ()-> memberService.signUpMember(memberRequestDTO));
+        when(memberMapper.emailCheck(requestDTO.getEmail())).thenReturn(1);
+        Assertions.assertThrows(APIException.class, ()-> memberService.signUpMember(requestDTO));
 
-        verify(memberMapper, atLeastOnce()).emailCheck(memberRequestDTO.getEmail());
+        verify(memberMapper, atLeastOnce()).emailCheck(requestDTO.getEmail());
+    }
+    @Test
+    @DisplayName("로그인 시도시 Mapper.findByEmailPassword 호출 검증")
+    void loginSuccess(){
+        loginDTO = MemberRequestDTO.LoginDTO.builder()
+                .email("test@naver.com")
+                .password("Test1234!@#$")
+                .build();
+
+        memberDao = MemberDao.builder()
+                .id(1L)
+                .email(loginDTO.getEmail())
+                .password(SHA256.encrypt(loginDTO.getPassword()))
+                .build();
+
+        when(memberMapper.findByEmailPassword(loginDTO.getEmail(), SHA256.encrypt(loginDTO.getPassword()))).thenReturn(memberDao);
+        memberService.login(loginDTO.getEmail(), loginDTO.getPassword());
+        verify(memberMapper, times(1)).findByEmailPassword(memberDao.getEmail(), memberDao.getPassword());
+    }
+
+    @Test
+    @DisplayName("로그인 실패시 Exception(NOT_FOUNT_ACCOUNT) 발생")
+    void loginFail(){
+        loginDTO = MemberRequestDTO.LoginDTO.builder()
+                .email("test@naver.com")
+                .password("Test1234!@#$")
+                .build();
+
+        when(memberMapper.findByEmailPassword(loginDTO.getEmail(), SHA256.encrypt(loginDTO.getPassword()))).thenThrow(new APIException(ErrorCode.NOT_FOUND_ACCOUNT));
+        assertThrows(APIException.class, () -> memberMapper.findByEmailPassword(loginDTO.getEmail(), SHA256.encrypt(loginDTO.getPassword())));
     }
 }

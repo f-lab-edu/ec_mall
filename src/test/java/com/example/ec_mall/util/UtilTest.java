@@ -14,11 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class UtilTest {
 
-    MemberRequestDTO memberRequestDTO;
+    MemberRequestDTO.RequestDTO memberRequestDTO;
 
     @BeforeEach
     void setUp(){
-        memberRequestDTO = MemberRequestDTO.builder()
+        memberRequestDTO = MemberRequestDTO.RequestDTO.builder()
                 .email("est@test.com")
                 .nickName("test")
                 .password(SHA256.encrypt("asdf"))
