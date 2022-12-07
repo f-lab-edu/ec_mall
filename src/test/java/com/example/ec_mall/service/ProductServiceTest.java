@@ -5,6 +5,7 @@ import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
+import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.dto.response.ProductPageResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
@@ -19,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -33,6 +34,7 @@ class ProductServiceTest {
     private UpdateProductRequestDTO updateProductRequestDTO;
     @Mock
     private ProductPageResponseDTO productPageResponseDTO;
+    private ProductResponseDTO productResponseDTO;
 
     @BeforeEach
     void init() {
@@ -89,7 +91,17 @@ class ProductServiceTest {
                 .updatedBy("admin")
                 .build();
 
-        when(productMapper.findProductInfoById(1L)).thenReturn(List.of(productRequestDTO));
+        ProductResponseDTO.ResponseDTO responseDTO= ProductResponseDTO.ResponseDTO.builder()
+                .productId(1L)
+                .name("test")
+                .price(100)
+                .info("상품조회")
+                .size(ProductSize.S)
+                .stock(10)
+                .categoryResponseDTO(new ProductResponseDTO.CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getLong()))
+                .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO())
+                .build();
+        when(productMapper.findByProductId(1L)).thenReturn(List.of(responseDTO));
         doNothing().when(productMapper).updateProduct(updateProductDao);
         /**
          *  1. 수정 서비스 실행시 먼저 상품 조회될 때 List 반환
@@ -107,8 +119,33 @@ class ProductServiceTest {
         /**
          * 1.수정전 조회시 상품 없는 경우 Exception 발생
          */
-        when(productMapper.findProductInfoById(1L)).thenThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT));
-        assertThrows(APIException.class, () -> productMapper.findProductInfoById(1L));
+        when(productMapper.findByProductId(1L)).thenThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT));
+        assertThrows(APIException.class, () -> productMapper.findByProductId(1L));
+    }
+    @Test
+    @DisplayName("조회 성공시 SQL 호출확인")
+    void getProductSuccess(){
+        ProductResponseDTO.ResponseDTO responseDTO = ProductResponseDTO.ResponseDTO.builder()
+                .productId(1L)
+                .name("test")
+                .price(100)
+                .info("상품조회")
+                .size(ProductSize.S)
+                .stock(10)
+                .categoryResponseDTO(new ProductResponseDTO.CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getLong()))
+                .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO("test/test.img"))
+                .build();
+        when(productMapper.findByProductId(1L)).thenReturn(List.of(responseDTO));
+
+        productService.getProduct(1L);
+
+        verify(productMapper, times(1)).findByProductId(1L);
+    }
+    @Test
+    @DisplayName("조회 실패시 Exception 발생")
+    void getProductFail(){
+        when(productMapper.findByProductId(1L)).thenThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT));
+        assertThrows(APIException.class, () -> productMapper.findByProductId(1L));
     }
     @Test
     @DisplayName("상품 삭제 서비스 호출 시 SQL이 무조건 한번 호출된다.")

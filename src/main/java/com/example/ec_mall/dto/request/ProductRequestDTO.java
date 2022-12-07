@@ -3,6 +3,7 @@ package com.example.ec_mall.dto.request;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
 import lombok.*;
+
 import javax.validation.constraints.*;
 
 @Data

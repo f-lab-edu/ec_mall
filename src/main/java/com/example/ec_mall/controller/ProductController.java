@@ -2,15 +2,14 @@ package com.example.ec_mall.controller;
 
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
-import com.example.ec_mall.dto.response.ProductPageResponseDTO;
-import com.example.ec_mall.dto.response.ProductResponseDTO;
-import com.example.ec_mall.paging.PagingResponse;
 import com.example.ec_mall.service.ProductService;
+import com.example.ec_mall.paging.PagingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +21,11 @@ public class ProductController {
     public ResponseEntity<Object> addProduct(@RequestBody @Valid ProductRequestDTO productRequestDTO) {
         productService.addProduct(productRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<List<ProductResponseDTO.ResponseDTO>> getProduct(@PathVariable Long id){
+        List<ProductResponseDTO.ResponseDTO> productResponseDTO = productService.getProduct(id);
+        return ResponseEntity.status(HttpStatus.OK).body(productResponseDTO);
     }
 
     /**

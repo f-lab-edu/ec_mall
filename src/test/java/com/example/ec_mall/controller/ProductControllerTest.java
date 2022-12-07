@@ -4,6 +4,7 @@ import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
+import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.ProductService;
@@ -17,6 +18,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -291,12 +294,42 @@ class ProductControllerTest {
                .andDo(print());
     }
     @Test
+    @DisplayName("상품 조회 성공")
+    void getProduct() throws Exception {
+        ProductResponseDTO.ResponseDTO response = ProductResponseDTO.ResponseDTO.builder()
+                .productId(31L)
+                .name("test")
+                .price(1000)
+                .stock(12)
+                .size(ProductSize.L)
+                .info("테스트 정보")
+                .categoryResponseDTO(new ProductResponseDTO.CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getShort()))
+                .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO("test/etes.img"))
+                .build();
+
+        when(productService.getProduct(31L)).thenReturn(List.of(response));
+        mockMvc.perform(get("/product/31").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(response))).andExpect(status().isOk()).andDo(print());
+    }
+    @Test
+    @DisplayName("상품 없을 시 Exception 발생 ( Status : 901, Message : 없는 상품입니다.)")
+    void getProductFail() throws Exception {
+        doThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT)).when(productService).getProduct(31L);
+
+        mockMvc.perform(get("/product/31").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> productService.getProduct(31L)))
+                .andExpect(jsonPath("$.status").value(901))
+                .andExpect(jsonPath("$.message").value("없는 상품입니다."))
+                .andExpect(status().isBadRequest()).andDo(print());
+    }
+    @Test
     @DisplayName("한 페이지에 상품이 20개씩 표시되며 페이징 처리를 성공한다.")
     void productPage() throws Exception{
         mockMvc.perform(get("/product/main")
-               .param("limitStart", "1")
-               .param("recordSize", "20"))
-               .andExpect(status().isOk())
-               .andDo(print());
+                        .param("limitStart", "1")
+                        .param("recordSize", "20"))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }

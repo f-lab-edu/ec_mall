@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 
 @Data
 @Builder
@@ -19,7 +18,7 @@ import javax.validation.constraints.Size;
 public class UpdateProductRequestDTO {
 
     @NotBlank(message = "상품명은 필수 입력 값입니다.")
-    @Size(min = 0, max = 45, message = "상품명은 45자 이하로 입력 가능합니다.")
+    @javax.validation.constraints.Size(min = 0, max = 45, message = "상품명은 45자 이하로 입력 가능합니다.")
     private String name;
 
     @NotNull(message = "상품 가격은 필수 입력 값입니다.")
@@ -34,7 +33,7 @@ public class UpdateProductRequestDTO {
     private int stock;
 
     @NotNull(message = "상품 상세 설명은 필수 입력 값입니다.")
-    @Size(min = 0, max = 100, message = "상품 상세 설명은 100자 이하로 입력 가능합니다.")
+    @javax.validation.constraints.Size(min = 0, max = 100, message = "상품 상세 설명은 100자 이하로 입력 가능합니다.")
     private String info;
 
     @NotNull(message = "상품 이미지는 필수 입력 값입니다.")
