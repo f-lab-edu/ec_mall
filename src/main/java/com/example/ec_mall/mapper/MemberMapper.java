@@ -1,7 +1,6 @@
 package com.example.ec_mall.mapper;
 
 import com.example.ec_mall.dao.MemberDao;
-import com.example.ec_mall.dto.request.MemberRequestDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -20,6 +19,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface MemberMapper {
     int signUpMember(MemberDao memberDao);
     int emailCheck(String email);
-    MemberRequestDTO.LoginDTO findByEmailPassword(String email, String password);
-    String findPasswordById(Long id);
+    MemberDao findByEmailPassword(String email, String password);
 }

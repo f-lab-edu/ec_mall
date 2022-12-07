@@ -54,16 +54,22 @@ public class MemberService {
         return memberMapper.emailCheck(email) == 1;
     }
 
-    public MemberRequestDTO.LoginDTO login(String email, String password){
+    /**
+     * 로그인 API
+     * @param email 회원가입시 입력한 email
+     * @param password 회원가입시 입력한 password
+     * @return
+     *
+     * 아이디 혹은 비밀번호가 잘못되어 로그인 실패시 아이디가 틀렸는지 비밀번호가 틀렸는지 알려주지 않는다.
+     * 그래서 sql이 실패하면 Null값으로 분기처리.
+     */
+
+    public void login(String email, String password){
         String encryptPassword = SHA256.encrypt(password);
-        MemberRequestDTO.LoginDTO memberLoginDTO = memberMapper.findByEmailPassword(email,encryptPassword);
-        if(memberLoginDTO == null){
+        MemberDao memberInfo = memberMapper.findByEmailPassword(email,encryptPassword);
+        if(memberInfo == null){
             log.error("Invalid Login");
             throw new APIException(ErrorCode.NOT_FOUND_ACCOUNT);
-        } else if (encryptPassword.equals(memberLoginDTO.getPassword())){
-            //session 저장
         }
-
-        return memberLoginDTO;
     }
 }

@@ -21,10 +21,6 @@
         values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <select id="product" resultType="com.example.ec_mall.dao.ProductDao">
-        SELECT * FROM product;
-    </select>
-
     <select id="findCategoryId" resultType="long">
         SELECT category_id FROM product_category
         WHERE product_id = #{productId};
@@ -46,7 +42,7 @@
         where A.product_id = #{productId}
     </select>
     
-    <resultMap id="productInfo" type="ProductResponseDTO">
+    <resultMap id="productInfo" type="com.example.ec_mall.dto.response.ProductResponseDTO$ResponseDTO">
         <id column="product_id" property="productId"/>
         <result column="name" property="name"/>
         <result column="price" property="price"/>
@@ -54,9 +50,9 @@
         <result column="stock" property="stock"/>
         <result column="info" property="info"/>
         <collection property="categoryResponseDTO" resultMap="categoryInfo"/>
-        <collection property="imagesUrl" resultMap="productImagesInfo"/>
+        <collection property="productImagesResponseDTO" resultMap="productImagesInfo"/>
     </resultMap>
-    <resultMap id="categoryInfo" type="com.example.ec_mall.dto.response.CategoryResponseDTO">
+    <resultMap id="categoryInfo" type="com.example.ec_mall.dto.response.ProductResponseDTO$CategoryResponseDTO">
         <id column="category_id" property="categoryId"/>
         <result column="category_big" property="bigCategory"/>
         <result column="category_small" property="smallCategory"/>

@@ -1,5 +1,6 @@
 package com.example.ec_mall.controller;
 
+import com.example.ec_mall.dao.MemberDao;
 import com.example.ec_mall.dto.request.MemberRequestDTO;
 import com.example.ec_mall.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,21 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    /**
+     * 로그인 (Email, Password)
+     * @param memberLoginDTO : Email, Password
+     * @return
+     */
     @PostMapping("/login")
-    public ResponseEntity<MemberRequestDTO.LoginDTO> login(@RequestBody @Valid MemberRequestDTO.LoginDTO memberLoginDTO, HttpSession session){
+    public ResponseEntity<MemberDao> login(@RequestBody @Valid MemberRequestDTO.LoginDTO memberLoginDTO, HttpSession session){
         memberService.login(memberLoginDTO.getEmail(), memberLoginDTO.getPassword());
+        session.setAttribute("account", memberLoginDTO.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Object> logout(HttpSession session){
+        session.removeAttribute("account");
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -30,6 +30,7 @@ public class MemberRequestDTO {
         private String password;
     }
     @Data
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     public static class LoginDTO {
