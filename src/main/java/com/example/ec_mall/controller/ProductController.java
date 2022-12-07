@@ -2,6 +2,8 @@ package com.example.ec_mall.controller;
 
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
+import com.example.ec_mall.dto.response.ProductPageResponseDTO;
+import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.service.ProductService;
 import com.example.ec_mall.paging.PagingResponse;
 import lombok.RequiredArgsConstructor;
