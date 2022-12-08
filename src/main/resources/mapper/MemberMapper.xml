@@ -26,4 +26,10 @@
     <select id = "emailCheck" resultType="int">
         select count(email) from account where email = #{email}
     </select>
+
+    <select id="findByEmailPassword" resultType="MemberDao">
+        select * from account
+        where email = #{email}
+          and password = #{password}
+    </select>
 </mapper>

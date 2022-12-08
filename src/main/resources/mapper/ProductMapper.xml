@@ -63,7 +63,7 @@
                           LEFT JOIN product_images AS D ON A.product_id = D.product_id
         where A.product_id = #{productId}
     </select>
-
+    
     <resultMap id="productInfo" type="com.example.ec_mall.dto.response.ProductResponseDTO$ResponseDTO">
         <id column="product_id" property="productId"/>
         <result column="name" property="name"/>

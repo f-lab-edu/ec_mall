@@ -18,7 +18,7 @@ public class MemberService {
 
     private final MemberMapper memberMapper;
 
-    public void signUpMember(MemberRequestDTO memberRequestDTO) {
+    public void signUpMember(MemberRequestDTO.RequestDTO memberRequestDTO) {
         MemberDao member = MemberDao.builder()
                 .email(memberRequestDTO.getEmail())
                 .nickName(memberRequestDTO.getNickName())
@@ -52,5 +52,24 @@ public class MemberService {
 
     private boolean isDuplicatedEmail(String email){
         return memberMapper.emailCheck(email) == 1;
+    }
+
+    /**
+     * 로그인 API
+     * @param email 회원가입시 입력한 email
+     * @param password 회원가입시 입력한 password
+     * @return
+     *
+     * 아이디 혹은 비밀번호가 잘못되어 로그인 실패시 아이디가 틀렸는지 비밀번호가 틀렸는지 알려주지 않는다.
+     * 그래서 sql이 실패하면 Null값으로 분기처리.
+     */
+
+    public void login(String email, String password){
+        String encryptPassword = SHA256.encrypt(password);
+        MemberDao memberInfo = memberMapper.findByEmailPassword(email,encryptPassword);
+        if(memberInfo == null){
+            log.error("Invalid Login");
+            throw new APIException(ErrorCode.NOT_FOUND_ACCOUNT);
+        }
     }
 }
