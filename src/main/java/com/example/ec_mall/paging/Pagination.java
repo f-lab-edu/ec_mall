@@ -21,7 +21,7 @@ public class Pagination {
     }
 
     private void calculation(ProductPageResponseDTO productPageResponseDTO) {
-        if (totalPageCount > 0) {
+        if (totalRecordCount > 0) {
 
             // 전체 페이지 수 계산
             totalPageCount = ((totalRecordCount - 1) / productPageResponseDTO.getRecordSize()) + 1;

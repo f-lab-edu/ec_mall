@@ -1,11 +1,11 @@
 package com.example.ec_mall.controller;
 
+import com.example.ec_mall.dao.ProductPageDao;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.response.ProductPageResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.service.ProductService;
-import com.example.ec_mall.paging.PagingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +51,8 @@ public class ProductController {
     }
 
    @GetMapping("/main")
-   public ResponseEntity<PagingResponse<ProductResponseDTO>> productPage(@ModelAttribute ProductPageResponseDTO productPageResponseDTO){
-        PagingResponse<ProductResponseDTO> product = productService.productPage(productPageResponseDTO);
+   public ResponseEntity<ProductPageDao> productPage(ProductPageResponseDTO productPageResponseDTO){
+        ProductPageDao product = productService.productPage(productPageResponseDTO);
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 }

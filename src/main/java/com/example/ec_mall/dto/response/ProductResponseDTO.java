@@ -3,7 +3,6 @@ package com.example.ec_mall.dto.response;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
 import lombok.*;
-
 public class ProductResponseDTO {
     @Data
     @NoArgsConstructor

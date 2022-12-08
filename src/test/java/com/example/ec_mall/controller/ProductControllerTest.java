@@ -4,6 +4,7 @@ import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
+import com.example.ec_mall.dto.response.ProductPageResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
@@ -18,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -46,6 +46,7 @@ class ProductControllerTest {
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
     private UpdateProductRequestDTO updateProductRequestDTO;
+    private ProductPageResponseDTO productPageResponseDTO;
     @BeforeEach
     void init() {
         productRequestDTO = ProductRequestDTO.builder()
@@ -317,19 +318,23 @@ class ProductControllerTest {
         doThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT)).when(productService).getProduct(31L);
 
         mockMvc.perform(get("/product/31").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
-                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> productService.getProduct(31L)))
-                .andExpect(jsonPath("$.status").value(901))
-                .andExpect(jsonPath("$.message").value("없는 상품입니다."))
-                .andExpect(status().isBadRequest()).andDo(print());
+               .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+               .andExpect(result -> Assertions.assertThrows(APIException.class, () -> productService.getProduct(31L)))
+               .andExpect(jsonPath("$.status").value(901))
+               .andExpect(jsonPath("$.message").value("없는 상품입니다."))
+               .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
     @DisplayName("한 페이지에 상품이 20개씩 표시되며 페이징 처리를 성공한다.")
     void productPage() throws Exception{
+        when(productService.productPage(productPageResponseDTO)).thenReturn(any());
+
         mockMvc.perform(get("/product/main")
-                        .param("limitStart", "1")
-                        .param("recordSize", "20"))
-                .andExpect(status().isOk())
-                .andDo(print());
+               .param("limitStart", "1")
+               .param("recordSize", "20")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(objectMapper.writeValueAsString(productRequestDTO)))
+               .andExpect(status().isOk())
+               .andDo(print());
     }
 }
