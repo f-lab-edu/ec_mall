@@ -21,6 +21,10 @@
         values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
+    <select id="product" resultType="com.example.ec_mall.dao.ProductDao">
+        SELECT * FROM product;
+    </select>
+
     <select id="findCategoryId" resultType="long">
         SELECT category_id FROM product_category
         WHERE product_id = #{productId};
@@ -40,6 +44,28 @@
                           LEFT JOIN category AS C ON B.category_id = C.category_id
                           LEFT JOIN product_images AS D ON A.product_id = D.product_id
         where A.product_id = #{productId}
+    </select>
+
+    <select id="productPage" resultMap="productInfo">
+        SELECT A.product_id,
+               A.name,
+               A.price,
+               A.size,
+               A.stock,
+               A.info,
+               D.images_url,
+               C.category_big,
+               C.category_small
+        FROM product AS A LEFT JOIN product_category AS B ON A.product_id = B.product_id
+                          LEFT JOIN category AS C ON B.category_id = C.category_id
+                          LEFT JOIN product_images AS D ON A.product_id = D.product_id
+        ORDER BY product_id
+            LIMIT #{pagination.limitStart}, #{recordSize}
+    </select>
+
+    <select id="productPageCount" resultType="int">
+        SELECT COUNT(*)
+        FROM product
     </select>
 
     <resultMap id="productInfo" type="com.example.ec_mall.dto.response.ProductResponseDTO$ResponseDTO">
@@ -65,13 +91,13 @@
     <update id="updateProduct" parameterType="com.example.ec_mall.dao.UpdateProductDao">
         update product
         set
-        <if test="name != null">name = #{name},</if>
-        <if test="price != null">price = #{price},</if>
-        <if test="size != null">size = #{size},</if>
-        <if test="stock != null">stock = #{stock},</if>
-        <if test="info != null">info = #{info},</if>
-        <if test="updatedBy != null">updated_by = #{updatedBy},</if>
-        updated_date = now()
+            <if test="name != null">name = #{name},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="size != null">size = #{size},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="info != null">info = #{info},</if>
+            <if test="updatedBy != null">updated_by = #{updatedBy},</if>
+            updated_date = now()
         where product_id = #{productId};
 
         update category
