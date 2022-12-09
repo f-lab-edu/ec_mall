@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -46,6 +48,7 @@ class ProductControllerTest {
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
     private UpdateProductRequestDTO updateProductRequestDTO;
+    @Mock
     private ProductPageResponseDTO productPageResponseDTO;
     @BeforeEach
     void init() {
@@ -325,16 +328,25 @@ class ProductControllerTest {
                .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
-    @DisplayName("한 페이지에 상품이 20개씩 표시되며 페이징 처리를 성공한다.")
+    @DisplayName("상품 목록 조회(페이징)를 성공한다.")
     void productPage() throws Exception{
         when(productService.productPage(productPageResponseDTO)).thenReturn(any());
 
         mockMvc.perform(get("/product/main")
-               .param("limitStart", "1")
-               .param("recordSize", "20")
                .contentType(MediaType.APPLICATION_JSON)
                .content(objectMapper.writeValueAsString(productRequestDTO)))
                .andExpect(status().isOk())
+               .andDo(print());
+    }
+    @Test
+    @DisplayName("recordSize가 0보다 작으면 조회를 실패한다.")
+    public void getProductsFailTest() throws Exception {
+        doThrow(new RuntimeException()).when(productPageResponseDTO).setRecordSize(-2);
+
+        mockMvc.perform(get("/product/main")
+               .accept(MediaType.APPLICATION_JSON)
+               .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(result -> Assertions.assertThrows(RuntimeException.class, () -> productPageResponseDTO.setRecordSize(-2)))
                .andDo(print());
     }
 }

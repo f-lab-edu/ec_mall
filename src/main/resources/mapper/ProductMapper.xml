@@ -21,10 +21,6 @@
         values (#{productId}, #{categoryId}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <select id="product" resultType="com.example.ec_mall.dao.ProductDao">
-        SELECT * FROM product;
-    </select>
-
     <select id="findCategoryId" resultType="long">
         SELECT category_id FROM product_category
         WHERE product_id = #{productId};
