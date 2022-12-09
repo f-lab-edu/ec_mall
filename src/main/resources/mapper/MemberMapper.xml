@@ -27,7 +27,7 @@
         select count(email) from account where email = #{email}
     </select>
 
-    <select id="findByEmailPassword" resultType="MemberDao">
+    <select id="findByEmailPassword" resultType="com.example.ec_mall.dao.MemberDao">
         select * from account
         where email = #{email}
           and password = #{password}
