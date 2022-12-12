@@ -4,17 +4,13 @@ import com.example.ec_mall.dao.*;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO.ResponseDTO;
-import com.example.ec_mall.dto.response.ProductPageResponseDTO;
-import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.ProductMapper;
-import com.example.ec_mall.paging.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -103,21 +99,5 @@ public class ProductService {
     }
     public void deleteProduct(Long productId){
         productMapper.deleteProduct(productId);
-    }
-
-    public ProductPageDao productPage(ProductPageResponseDTO productPageResponseDTO){
-        int count = productMapper.productPageCount(productPageResponseDTO);
-        if(count < 1){
-            return new ProductPageDao(Collections.emptyList(), null);
-            /**
-             *  emptyList() => null이 아닌 빈 값의 리스트를 반환한다.
-             */
-        }
-
-        Pagination pagination = new Pagination(count, productPageResponseDTO);
-        productPageResponseDTO.setPagination(pagination);
-
-        List<ProductResponseDTO> list = productMapper.productPage(productPageResponseDTO);
-        return new ProductPageDao(list, pagination);
     }
 }

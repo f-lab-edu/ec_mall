@@ -1,9 +1,7 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dao.ProductPageDao;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
-import com.example.ec_mall.dto.response.ProductPageResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -48,11 +46,5 @@ public class ProductController {
     public ResponseEntity<Object> deleteProduct(@PathVariable("productId") Long productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-   @GetMapping("/main")
-   public ResponseEntity<ProductPageDao> productPage(ProductPageResponseDTO productPageResponseDTO){
-        ProductPageDao product = productService.productPage(productPageResponseDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 }
