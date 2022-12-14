@@ -23,7 +23,7 @@ public class PagingResponseDTO {
 
     @Data
     @Builder
-    public static class ResponseDTO{
+    public static class PageResponseDTO {
         private long productId;
         private String name;
         private CategoryResponseDTO categoryResponseDTO;
