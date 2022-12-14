@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 public class OrderService {
     private final OrderMapper orderMapper;
 
-    public void order(String email, OrderRequestDTO orderRequestDTO, long id){
+    public void order(String email, OrderRequestDTO orderRequestDTO){
         /**
          * 결제등의 추가 행위는 추후에 작업하고 현재는 product 테이블의 stock을 감소시키는 것만 한다.
          * 주문 후 재고가 0보다 작다면 exception 발생
          */
         // beforeStock : 주문 전 재고
-        int beforeStock = orderMapper.findStockByProductId(id);
+        int beforeStock = orderMapper.findStockByProductId(orderRequestDTO.getProductId());
         // afterStock : 주문 후 재고
         int afterStock = beforeStock - orderRequestDTO.getOrdersCount();
         if(afterStock < 0) {
@@ -32,7 +32,7 @@ public class OrderService {
 
         OrderDao orderDao = OrderDao.builder()
                 .accountId(orderMapper.findAccountByEmail(email))
-                .price(orderMapper.findPriceByProductId(id))
+                .price(orderMapper.findPriceByProductId(orderRequestDTO.getProductId()))
                 .createdBy(email)
                 .updatedBy(email)
                 .build();
@@ -40,12 +40,12 @@ public class OrderService {
 
         ProductOrders productOrders = ProductOrders.builder()
                 .ordersId(orderDao.getOrderId())
-                .productId(id)
+                .productId(orderRequestDTO.getProductId())
                 .ordersCount(orderRequestDTO.getOrdersCount())
                 .createdBy(email)
                 .updatedBy(email)
                 .build();
         orderMapper.addProductOrder(productOrders);
-        orderMapper.subtractionStock(id, afterStock);
+        orderMapper.subtractionStock(orderRequestDTO.getProductId(), afterStock);
     }
 }

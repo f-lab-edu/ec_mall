@@ -9,6 +9,9 @@ import javax.validation.constraints.NotNull;
 @Data
 @Builder
 public class OrderRequestDTO {
+    //선택한 상품
+    private long productId;
+
     @NotNull(message = "상품 사이즈를 선택하세요.")
     private ProductSize size;
 

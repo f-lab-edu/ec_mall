@@ -28,6 +28,8 @@ public class OrderResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ResponseDTO{
+        private long productId;
+        private long ordersId;
         private String name;
         private int price;
         private ProductSize size;
