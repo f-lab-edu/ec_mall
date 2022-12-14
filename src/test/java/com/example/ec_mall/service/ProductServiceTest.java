@@ -6,7 +6,6 @@ import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
-import com.example.ec_mall.dto.response.ProductPageResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.ProductMapper;
@@ -32,9 +31,6 @@ class ProductServiceTest {
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
     private UpdateProductRequestDTO updateProductRequestDTO;
-    @Mock
-    private ProductPageResponseDTO productPageResponseDTO;
-    private ProductResponseDTO productResponseDTO;
 
     @BeforeEach
     void init() {
@@ -160,18 +156,5 @@ class ProductServiceTest {
         doThrow(DataIntegrityViolationException.class).when(productMapper).deleteProduct(anyLong());
 
         assertThrows(DataIntegrityViolationException.class, () -> productService.deleteProduct(1L));
-    }
-    @Test
-    @DisplayName("상품 목록(페이징) 호출 시 SQL 한번 호출되어야 한다.")
-    void productPage(){
-        when(productMapper.productPageCount(productPageResponseDTO)).thenReturn(30);
-        productService.productPage(productPageResponseDTO);
-        verify(productMapper, times(1)).productPageCount(productPageResponseDTO);
-    }
-    @Test
-    @DisplayName("부적절한 인자가 넘어올 경우 상품 목록(페이징) 서비스는 실패해야 한다.")
-    void productPageException(){
-        doThrow(IllegalArgumentException.class).when(productMapper).productPage(productPageResponseDTO);
-        assertThrows(IllegalArgumentException.class, () -> productMapper.productPage(productPageResponseDTO));
     }
 }

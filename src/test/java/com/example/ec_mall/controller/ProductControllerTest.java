@@ -4,7 +4,6 @@ import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
-import com.example.ec_mall.dto.response.ProductPageResponseDTO;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -47,8 +45,6 @@ class ProductControllerTest {
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
     private UpdateProductRequestDTO updateProductRequestDTO;
-    @Mock
-    private ProductPageResponseDTO productPageResponseDTO;
     @BeforeEach
     void init() {
         productRequestDTO = ProductRequestDTO.builder()
@@ -325,27 +321,5 @@ class ProductControllerTest {
                .andExpect(jsonPath("$.status").value(901))
                .andExpect(jsonPath("$.message").value("없는 상품입니다."))
                .andExpect(status().isBadRequest()).andDo(print());
-    }
-    @Test
-    @DisplayName("상품 목록 조회(페이징)를 성공한다.")
-    void productPage() throws Exception{
-        when(productService.productPage(productPageResponseDTO)).thenReturn(any());
-
-        mockMvc.perform(get("/product/main")
-               .contentType(MediaType.APPLICATION_JSON)
-               .content(objectMapper.writeValueAsString(productRequestDTO)))
-               .andExpect(status().isOk())
-               .andDo(print());
-    }
-    @Test
-    @DisplayName("recordSize가 0보다 작으면 조회를 실패한다.")
-    public void getProductsFailTest() throws Exception {
-        doThrow(new RuntimeException()).when(productPageResponseDTO).setRecordSize(-2);
-
-        mockMvc.perform(get("/product/main")
-               .accept(MediaType.APPLICATION_JSON)
-               .contentType(MediaType.APPLICATION_JSON))
-               .andExpect(result -> Assertions.assertThrows(RuntimeException.class, () -> productPageResponseDTO.setRecordSize(-2)))
-               .andDo(print());
     }
 }
