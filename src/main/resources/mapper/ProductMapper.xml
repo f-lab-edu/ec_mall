@@ -45,10 +45,6 @@
     <select id="productPage" resultMap="productInfo">
         SELECT A.product_id,
                A.name,
-               A.price,
-               A.size,
-               A.stock,
-               A.info,
                D.images_url,
                C.category_big,
                C.category_small
@@ -56,7 +52,7 @@
                           LEFT JOIN category AS C ON B.category_id = C.category_id
                           LEFT JOIN product_images AS D ON A.product_id = D.product_id
         ORDER BY product_id
-            LIMIT #{pagination.limitStart}, #{recordSize}
+            LIMIT #{startIndex}, #{pageSize}
     </select>
 
     <select id="productPageCount" resultType="int">

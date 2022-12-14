@@ -1,55 +1,55 @@
 package com.example.ec_mall.paging;
 
-import com.example.ec_mall.dto.response.ProductPageResponseDTO;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class Pagination {
-    private int totalRecordCount;   // 전체 데이터 수
-    private int totalPageCount;     // 전체 페이지 수
-    private int startPage;          // 첫 페이지 번호
-    private int endPage;            // 끝 페이지 번호
-    private int limitStart;         // LIMIT 시작 위치
-    private boolean existPrevPage;  // 이전 페이지 존재 여부
-    private boolean existNextPage;  // 다음 페이지 존재 여부
+    private int pageSize = 20;  // 페이지 당 보여지는 게시글의 최대 개수
+    private int blockSize = 10; // 페이징된 버튼의 블럭당 최대 개수
+    private int page = 1;       // 현재 페이지
+    private int block = 1;      // 현재 블럭
+    private int totalListCnt;   // 총 게시글 수
+    private int totalPageCnt;   // 총 페이지 수
+    private int totalBlockCnt;  // 총 블럭 수
+    private int startPage = 1;  // 블럭 시작 페이지
+    private int endPage = 1;    // 블럭 마지막 페이지
+    private int startIndex = 1; // DB 접근 시작 index
+    private int prevBlock;      // 이전 블럭의 마지막 페이지
+    private int nextBlock;      // 다음 블럭의 시작 페이지
 
-    public Pagination(int totalRecordCount, ProductPageResponseDTO productPageResponseDTO) {
-        if (totalRecordCount > 0) {
-            this.totalRecordCount = totalRecordCount;
-            this.calculation(productPageResponseDTO);
+    public Pagination(int totalListCnt, int page) {
+        /**
+         * 총 게시물 수와 현재 페이지를 Controller로 부터 받아온다.
+         * 총 게시물 수	- totalListCnt
+         * 현재 페이지	- page
+         */
+        setPage(page); // 현재 페이지
+        setTotalListCnt(totalListCnt); // 총 게시글 수
+        setTotalPageCnt((int) Math.ceil(totalListCnt * 1.0 / pageSize)); // 총 페이지 수
+        setTotalBlockCnt((int) Math.ceil(totalPageCnt * 1.0 / blockSize)); // 총 블럭 수
+        setBlock((int) Math.ceil((page * 1.0)/blockSize)); // 현재 블럭
+        setStartPage((block - 1) * blockSize + 1); // 블럭 시작 페이지
+        setEndPage(startPage + blockSize - 1); // 블럭 마지막 페이지
+
+        /* === 블럭 마지막 페이지에 대한 validation ===*/
+        if(endPage > totalPageCnt){
+            this.endPage = totalPageCnt;
         }
-    }
 
-    private void calculation(ProductPageResponseDTO productPageResponseDTO) {
-        if (totalRecordCount > 0) {
+        setPrevBlock((block * blockSize) - blockSize); // 이전 블럭(클릭 시, 이전 블럭 마지막 페이지)
 
-            // 전체 페이지 수 계산
-            totalPageCount = ((totalRecordCount - 1) / productPageResponseDTO.getRecordSize()) + 1;
-
-            // 현재 페이지 번호가 전체 페이지 수보다 큰 경우, 현재 페이지 번호에 전체 페이지 수 저장
-            if (productPageResponseDTO.getPage() > totalPageCount) {
-                productPageResponseDTO.setPage(totalPageCount);
-            }
-
-            // 첫 페이지 번호 계산
-            startPage = ((productPageResponseDTO.getPage() - 1) / productPageResponseDTO.getPageSize()) * productPageResponseDTO.getPageSize() + 1;
-
-            // 끝 페이지 번호 계산
-            endPage = startPage + productPageResponseDTO.getPageSize() - 1;
-
-            // 끝 페이지가 전체 페이지 수보다 큰 경우, 끝 페이지 전체 페이지 수 저장
-            if (endPage > totalPageCount) {
-                endPage = totalPageCount;
-            }
-
-            // LIMIT 시작 위치 계산
-            limitStart = (productPageResponseDTO.getPage() - 1) * productPageResponseDTO.getRecordSize();
-
-            // 이전 페이지 존재 여부 확인
-            existPrevPage = startPage != 1;
-
-            // 다음 페이지 존재 여부 확인
-            existNextPage = (endPage * productPageResponseDTO.getRecordSize()) < totalRecordCount;
+        /* === 이전 블럭에 대한 validation === */
+        if(prevBlock < 1) {
+            this.prevBlock = 1;
         }
+
+        setNextBlock((block * blockSize) + 1); // 다음 블럭(클릭 시, 다음 블럭 첫번째 페이지)
+
+        /* === 다음 블럭에 대한 validation ===*/
+        if(nextBlock > totalPageCnt) {
+            nextBlock = totalPageCnt;
+        }
+
+        setStartIndex((page-1) * pageSize); // DB 접근 시작 index
     }
 }
