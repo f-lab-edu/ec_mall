@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class ProductOrders {
+public class ProductOrdersDao {
     private long productOrdersId;       // product_orders ID
     private long ordersId;              // orders ID
     private long productId;             // product ID

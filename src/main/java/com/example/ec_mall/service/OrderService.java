@@ -1,7 +1,7 @@
 package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.OrderDao;
-import com.example.ec_mall.dao.ProductOrders;
+import com.example.ec_mall.dao.ProductOrdersDao;
 import com.example.ec_mall.dto.request.OrderRequestDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
@@ -32,20 +32,21 @@ public class OrderService {
 
         OrderDao orderDao = OrderDao.builder()
                 .accountId(orderMapper.findAccountByEmail(email))
-                .price(orderMapper.findPriceByProductId(orderRequestDTO.getProductId()))
+                //주문 가격 : 주문상품의 개당 가격 * 주문 수량
+                .price(orderMapper.findPriceByProductId(orderRequestDTO.getProductId()) * orderRequestDTO.getOrdersCount())
                 .createdBy(email)
                 .updatedBy(email)
                 .build();
         orderMapper.addOrder(orderDao);
 
-        ProductOrders productOrders = ProductOrders.builder()
+        ProductOrdersDao productOrdersDao = ProductOrdersDao.builder()
                 .ordersId(orderDao.getOrderId())
                 .productId(orderRequestDTO.getProductId())
                 .ordersCount(orderRequestDTO.getOrdersCount())
                 .createdBy(email)
                 .updatedBy(email)
                 .build();
-        orderMapper.addProductOrder(productOrders);
+        orderMapper.addProductOrder(productOrdersDao);
         orderMapper.subtractionStock(orderRequestDTO.getProductId(), afterStock);
     }
 }

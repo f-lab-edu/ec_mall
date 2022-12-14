@@ -1,20 +1,16 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
-import com.example.ec_mall.dto.request.MemberRequestDTO;
 import com.example.ec_mall.dto.request.MemberRequestDTO.LoginDTO;
 import com.example.ec_mall.dto.request.OrderRequestDTO;
-import com.example.ec_mall.dto.response.ProductResponseDTO;
-import com.example.ec_mall.service.MemberService;
+import com.example.ec_mall.exception.APIException;
+import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.OrderService;
-import com.example.ec_mall.util.SHA256;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,13 +18,14 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrderController.class)
-public class OrderController {
+public class OrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,27 +33,19 @@ public class OrderController {
     private ObjectMapper objectMapper;
     @MockBean
     private OrderService orderService;
-    private MockHttpSession session;
+    private MockHttpSession loginSession;
+
 
     @BeforeEach
     void login(){
-        LoginDTO loginDTO = MemberRequestDTO.LoginDTO.builder()
+        LoginDTO loginDTO = LoginDTO.builder()
                 .email("test@naver.com")
                 .password("Test1234!@#$")
                 .build();
 
-        session = new MockHttpSession();
-        session.setAttribute("account", loginDTO.getEmail());
+        loginSession = new MockHttpSession();
+        loginSession.setAttribute("account", loginDTO.getEmail());
     }
-//    @BeforeEach
-//    void product(){
-//        ProductResponseDTO.ResponseDTO responseDTO = ProductResponseDTO.ResponseDTO.builder()
-//                .productId(1L)
-//                .categoryResponseDTO(new ProductResponseDTO.CategoryResponseDTO(ProductCategory.PANTS, "Short-Pants"))
-//                .productImagesResponseDTO(new ProductResponseDTO.ProductImagesResponseDTO("23f23f"))
-//                .build();
-//    }
-
     @Test
     @DisplayName("주문 성공")
     void orderSuccess() throws Exception{
@@ -66,9 +55,26 @@ public class OrderController {
                 .ordersCount(2)
                 .build();
 
-        doNothing().when(orderService).order(session.toString(), orderRequestDTO);
-        mockMvc.perform(post("/order/orderShee").contentType(MediaType.APPLICATION_JSON)
+        doNothing().when(orderService).order(loginSession.getAttribute("account").toString(), orderRequestDTO);
+        mockMvc.perform(post("/order/orderSheet").session(loginSession).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(orderRequestDTO)))
                 .andExpect(status().isOk()).andDo(print());
+    }
+    @Test
+    @DisplayName("재고가 없을시 주문 실패: status : 910, message : 재고를 확인해주세요")
+    void orderFail() throws Exception{
+        OrderRequestDTO orderRequestDTO = OrderRequestDTO.builder()
+                .productId(1L)
+                .size(ProductSize.XL)
+                .ordersCount(2)
+                .build();
+
+        doThrow(new APIException(ErrorCode.NOT_ENOUGH_PRODUCT)).when(orderService).order(loginSession.getAttribute("account").toString(), orderRequestDTO);
+        mockMvc.perform(post("/order/orderSheet").session(loginSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(orderRequestDTO)))
+                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> orderService.order(loginSession.getAttribute("account").toString(), orderRequestDTO)))
+                .andExpect(jsonPath("$.status").value(910))
+                .andExpect(jsonPath("$.message").value("재고를 확인해주세요"))
+                .andDo(print());
     }
 }

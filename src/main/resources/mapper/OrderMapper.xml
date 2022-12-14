@@ -6,7 +6,7 @@
         values (#{accountId}, now(), #{price}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>
 
-    <insert id="addProductOrder" parameterType="com.example.ec_mall.dao.ProductOrders" useGeneratedKeys="true" keyProperty="productOrdersId">
+    <insert id="addProductOrder" parameterType="com.example.ec_mall.dao.ProductOrdersDao" useGeneratedKeys="true" keyProperty="productOrdersId">
         insert into product_orders (orders_id, product_id, product_orders_count, created_by, created_date, updated_by, updated_date)
         values (#{ordersId}, #{productId}, #{ordersCount}, #{createdBy}, now(), #{updatedBy}, now())
     </insert>

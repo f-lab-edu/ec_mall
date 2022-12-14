@@ -16,7 +16,6 @@ import javax.validation.Valid;
 @RequestMapping("/order")
 public class OrderController {
     private final OrderService orderService;
-
     /**
      * @param orderRequestDTO  사이즈, 수량
      * @param session  email
@@ -25,6 +24,6 @@ public class OrderController {
     @PostMapping("/orderSheet")
     public ResponseEntity<OrderResponseDTO> orderProduct(@RequestBody @Valid OrderRequestDTO orderRequestDTO, HttpSession session) {
         orderService.order(session.getAttribute("account").toString(), orderRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
