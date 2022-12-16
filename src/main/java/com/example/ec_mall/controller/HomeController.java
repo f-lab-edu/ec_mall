@@ -23,19 +23,7 @@ public class HomeController {
      */
     @GetMapping("/app")
     public ResponseEntity<List<Paging>> home(@RequestParam(defaultValue = "1") int page){
-        // 총 게시물 수
-        int totalListCnt = homeService.productPageCount();
-
-        // 생성인자로  총 게시물 수, 현재 페이지를 전달
-        Pagination pagination = new Pagination(totalListCnt, page);
-
-        // DB select start index
-        int startIndex = pagination.getStartIndex();
-        // 페이지 당 보여지는 게시글의 최대 개수
-        int pageSize = pagination.getPageSize();
-
-        List<Paging> pagingList = homeService.home(startIndex, pageSize);
-
+        List<Paging> pagingList = homeService.home(page);
         return ResponseEntity.status(HttpStatus.OK).body(pagingList);
     }
 }

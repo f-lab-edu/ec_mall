@@ -23,18 +23,16 @@ class HomeServiceTest {
     @Test
     @DisplayName("상품 목록(페이징) 호출 시 SQL 한번 호출되어야 한다.")
     void productPage(){
-        when(productMapper.productPageCount()).thenReturn(24);
-        homeService.productPageCount();
-        verify(productMapper, times(1)).productPageCount();
-
         when(productMapper.productPage(0, 20)).thenReturn(List.of());
-        homeService.home(0, 20);
+        when(productMapper.productPageCount()).thenReturn(24);
+        homeService.home(1);
         verify(productMapper, times(1)).productPage(0, 20);
+        verify(productMapper, times(1)).productPageCount();
     }
     @Test
     @DisplayName("DB 오류 발생 시 상품 목록(페이징) 서비스는 실패해야 한다.")
     void productPageException(){
         doThrow(DataIntegrityViolationException.class).when(productMapper).productPage(0,20);
-        assertThrows(DataIntegrityViolationException.class, () -> homeService.home(0, 20));
+        assertThrows(DataIntegrityViolationException.class, () -> homeService.home(1));
     }
 }

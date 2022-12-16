@@ -34,7 +34,7 @@ class HomeControllerTest {
                 .productImages(new ProductImages("/test/test.jpg"))
                 .build();
 
-        when(homeService.home(0, 20)).thenReturn(List.of(pageUtil));
+        when(homeService.home(1)).thenReturn(List.of(pageUtil));
         mockMvc.perform(get("/home/app")
                .param("page", "1")
                .contentType(MediaType.APPLICATION_JSON)
