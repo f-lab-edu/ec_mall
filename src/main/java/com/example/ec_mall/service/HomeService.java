@@ -1,9 +1,7 @@
 package com.example.ec_mall.service;
 
-import com.example.ec_mall.dao.PagingDao;
-import com.example.ec_mall.dto.request.PagingRequestDTO;
-import com.example.ec_mall.dto.response.PagingResponseDTO.*;
 import com.example.ec_mall.mapper.ProductMapper;
+import com.example.ec_mall.paging.PageUtil.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,15 +16,7 @@ public class HomeService {
     public int productPageCount(){
         return productMapper.productPageCount();
     }
-    public List<PageResponseDTO> homePaging(PagingRequestDTO pagingRequestDTO, int startIndex, int pageSize){
-        PagingDao pageDao = PagingDao.builder()
-                .name(pagingRequestDTO.getName())
-                .imagesUrl(pagingRequestDTO.getImagesUrl())
-                .bigCategory(pagingRequestDTO.getBigCategory())
-                .smallCategory(pagingRequestDTO.getSmallCategory())
-                .startIndex(startIndex)
-                .pageSize(pageSize)
-                .build();
-        return productMapper.productPage(pageDao);
+    public List<ProductPage> home(int startIndex, int pageSize){
+        return productMapper.productPage(startIndex, pageSize);
     }
 }

@@ -1,8 +1,6 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dto.enums.ProductCategory;
-import com.example.ec_mall.dto.request.PagingRequestDTO;
-import com.example.ec_mall.dto.response.PagingResponseDTO.*;
+import com.example.ec_mall.paging.PageUtil;
 import com.example.ec_mall.service.HomeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -31,25 +29,16 @@ class HomeControllerTest {
     @Test
     @DisplayName("상품 목록 조회(페이징)를 성공한다.")
     void productPage() throws Exception{
-        PagingRequestDTO pagingRequestDTO = PagingRequestDTO.builder()
+        PageUtil.ProductPage pageUtil = PageUtil.ProductPage.builder()
                 .name("test")
-                .bigCategory(ProductCategory.PANTS)
-                .smallCategory(ProductCategory.PANTS.getShort())
-                .imagesUrl("/test/test.jpg")
+                .productImages(new PageUtil.ProductImages("/test/test.jpg"))
                 .build();
 
-        PageResponseDTO response = PageResponseDTO.builder()
-                .productId(1L)
-                .name("test")
-                .categoryResponseDTO(new CategoryResponseDTO(ProductCategory.PANTS, ProductCategory.PANTS.getShort()))
-                .productImagesResponseDTO(new ProductImagesResponseDTO("/test/test.jpg"))
-                .build();
-
-        when(homeService.homePaging(pagingRequestDTO, 0, 20)).thenReturn(List.of(response));
+        when(homeService.home(0, 20)).thenReturn(List.of(pageUtil));
         mockMvc.perform(get("/home/app")
                .param("page", "1")
                .contentType(MediaType.APPLICATION_JSON)
-               .content(objectMapper.writeValueAsString(pagingRequestDTO)))
+               .content(objectMapper.writeValueAsString(pageUtil)))
                .andExpect(status().isOk())
                .andDo(print());
     }

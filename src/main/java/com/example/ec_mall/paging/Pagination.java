@@ -23,33 +23,33 @@ public class Pagination {
          * 총 게시물 수	- totalListCnt
          * 현재 페이지	- page
          */
-        setPage(page); // 현재 페이지
-        setTotalListCnt(totalListCnt); // 총 게시글 수
-        setTotalPageCnt((int) Math.ceil(totalListCnt * 1.0 / pageSize)); // 총 페이지 수
-        setTotalBlockCnt((int) Math.ceil(totalPageCnt * 1.0 / blockSize)); // 총 블럭 수
-        setBlock((int) Math.ceil((page * 1.0)/blockSize)); // 현재 블럭
-        setStartPage((block - 1) * blockSize + 1); // 블럭 시작 페이지
-        setEndPage(startPage + blockSize - 1); // 블럭 마지막 페이지
+        this.page = page;                                                       // 현재 페이지
+        this.totalListCnt = getTotalListCnt();                                  // 총 게시글 수
+        this.totalPageCnt = ((int) Math.ceil(totalListCnt * 1.0 / pageSize));   // 총 페이지 수
+        this.totalBlockCnt = ((int) Math.ceil(totalPageCnt * 1.0 / blockSize)); // 총 블럭 수
+        this.block = ((int) Math.ceil((page * 1.0)/blockSize));                 // 현재 블럭
+        this.startPage = ((block - 1) * blockSize + 1);                         // 블럭 시작 페이지
+        this.endPage = (startPage + blockSize - 1);                             // 블럭 마지막 페이지
 
         /* === 블럭 마지막 페이지에 대한 validation ===*/
         if(endPage > totalPageCnt){
             this.endPage = totalPageCnt;
         }
 
-        setPrevBlock((block * blockSize) - blockSize); // 이전 블럭(클릭 시, 이전 블럭 마지막 페이지)
+        this.prevBlock = ((block * blockSize) - blockSize);                     // 이전 블럭(클릭 시, 이전 블럭 마지막 페이지)
 
         /* === 이전 블럭에 대한 validation === */
         if(prevBlock < 1) {
             this.prevBlock = 1;
         }
 
-        setNextBlock((block * blockSize) + 1); // 다음 블럭(클릭 시, 다음 블럭 첫번째 페이지)
+        this.nextBlock = ((block * blockSize) + 1);                             // 다음 블럭(클릭 시, 다음 블럭 첫번째 페이지)
 
         /* === 다음 블럭에 대한 validation ===*/
         if(nextBlock > totalPageCnt) {
             nextBlock = totalPageCnt;
         }
 
-        setStartIndex((page-1) * pageSize); // DB 접근 시작 index
+        this.startIndex = ((page-1) * pageSize);                                // DB 접근 시작 index
     }
 }
