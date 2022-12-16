@@ -24,7 +24,7 @@ public class Pagination {
          * 현재 페이지	- page
          */
         this.page = page;                                                       // 현재 페이지
-        this.totalListCnt = getTotalListCnt();                                  // 총 게시글 수
+        this.totalListCnt = totalListCnt;                                       // 총 게시글 수
         this.totalPageCnt = ((int) Math.ceil(totalListCnt * 1.0 / pageSize));   // 총 페이지 수
         this.totalBlockCnt = ((int) Math.ceil(totalPageCnt * 1.0 / blockSize)); // 총 블럭 수
         this.block = ((int) Math.ceil((page * 1.0)/blockSize));                 // 현재 블럭

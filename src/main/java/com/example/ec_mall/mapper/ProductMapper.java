@@ -2,7 +2,7 @@ package com.example.ec_mall.mapper;
 
 import com.example.ec_mall.dao.*;
 import com.example.ec_mall.dto.response.ProductResponseDTO;
-import com.example.ec_mall.paging.PageUtil.*;
+import com.example.ec_mall.paging.PagingUtil.*;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
@@ -16,6 +16,6 @@ public interface ProductMapper {
     void deleteProduct(long productId);
     List<ProductResponseDTO.ResponseDTO> findByProductId(long productId);
     void updateProduct(UpdateProductDao updateProductDao);
-    List<ProductPage> productPage(int startIndex, int pageSize);
+    List<Paging> productPage(int startIndex, int pageSize);
     int productPageCount();
 }

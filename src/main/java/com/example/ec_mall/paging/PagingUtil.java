@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-public class PageUtil {
+public class PagingUtil {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -14,8 +14,8 @@ public class PageUtil {
     }
     @Data
     @Builder
-    public static class ProductPage {
+    public static class Paging {
         private String name;
-        private PageUtil.ProductImages productImages;
+        private PagingUtil.ProductImages productImages;
     }
 }

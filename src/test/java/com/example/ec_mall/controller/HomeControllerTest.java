@@ -1,6 +1,6 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.paging.PageUtil;
+import com.example.ec_mall.paging.PagingUtil.*;
 import com.example.ec_mall.service.HomeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -29,9 +29,9 @@ class HomeControllerTest {
     @Test
     @DisplayName("상품 목록 조회(페이징)를 성공한다.")
     void productPage() throws Exception{
-        PageUtil.ProductPage pageUtil = PageUtil.ProductPage.builder()
+        Paging pageUtil = Paging.builder()
                 .name("test")
-                .productImages(new PageUtil.ProductImages("/test/test.jpg"))
+                .productImages(new ProductImages("/test/test.jpg"))
                 .build();
 
         when(homeService.home(0, 20)).thenReturn(List.of(pageUtil));
