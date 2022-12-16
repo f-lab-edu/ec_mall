@@ -18,11 +18,12 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(OrderController.class)
 public class OrderControllerTest {
@@ -54,9 +55,9 @@ public class OrderControllerTest {
                 .size(ProductSize.XL)
                 .ordersCount(2)
                 .build();
-
-        doNothing().when(orderService).order(loginSession.getAttribute("account").toString(), orderRequestDTO);
-        mockMvc.perform(post("/order/orderSheet").session(loginSession).contentType(MediaType.APPLICATION_JSON)
+        List<OrderRequestDTO> items = List.of(orderRequestDTO);
+        doNothing().when(orderService).order(loginSession.getAttribute("account").toString(), items);
+        mockMvc.perform(post("/order").session(loginSession).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(orderRequestDTO)))
                 .andExpect(status().isOk()).andDo(print());
     }
@@ -68,11 +69,11 @@ public class OrderControllerTest {
                 .size(ProductSize.XL)
                 .ordersCount(2)
                 .build();
-
-        doThrow(new APIException(ErrorCode.NOT_ENOUGH_PRODUCT)).when(orderService).order(loginSession.getAttribute("account").toString(), orderRequestDTO);
-        mockMvc.perform(post("/order/orderSheet").session(loginSession).contentType(MediaType.APPLICATION_JSON)
+        List<OrderRequestDTO> items = List.of(orderRequestDTO);
+        doThrow(new APIException(ErrorCode.NOT_ENOUGH_PRODUCT)).when(orderService).order(loginSession.getAttribute("account").toString(), items);
+        mockMvc.perform(post("/order").session(loginSession).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(orderRequestDTO)))
-                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> orderService.order(loginSession.getAttribute("account").toString(), orderRequestDTO)))
+                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> orderService.order(loginSession.getAttribute("account").toString(), items)))
                 .andExpect(jsonPath("$.status").value(910))
                 .andExpect(jsonPath("$.message").value("재고를 확인해주세요"))
                 .andDo(print());

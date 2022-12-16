@@ -46,10 +46,16 @@ public class OrderServiceTest {
     @DisplayName("주문성공 시 Mapper 호출 확인")
     void getProductSuccess(){
         OrderRequestDTO orderRequestDTO = OrderRequestDTO.builder()
-                .productId(List.of(29L,1L))
+                .productId(29L)
                 .size(ProductSize.XL)
                 .ordersCount(2)
                 .build();
+        OrderRequestDTO orderRequestDTO1 = OrderRequestDTO.builder()
+                .productId(31L)
+                .size(ProductSize.XL)
+                .ordersCount(2)
+                .build();
+        List<OrderRequestDTO> items = List.of(orderRequestDTO, orderRequestDTO1);
 
 
         OrderDao orderDao = OrderDao.builder()
@@ -74,7 +80,7 @@ public class OrderServiceTest {
         doNothing().when(orderMapper).addProductOrder(productOrdersDao);     // insert orderTable
         doNothing().when(orderMapper).subtractionStock(29L, 1);     // update after stock
 
-        orderService.order(loginSession.getAttribute("account").toString(),orderRequestDTO);
+        orderService.order(loginSession.getAttribute("account").toString(), items);
 
         verify(orderMapper, times(1)).findStockByProductId(29L);
         verify(orderMapper, times(1)).findPriceByProductId(29L);
@@ -91,9 +97,9 @@ public class OrderServiceTest {
                 .size(ProductSize.XL)
                 .ordersCount(2)
                 .build();
-
+        List<OrderRequestDTO> items = List.of(orderRequestDTO);
         when(orderMapper.findStockByProductId(29L)).thenReturn(0);
-        assertThrows(APIException.class, () -> orderService.order(loginSession.getAttribute("account").toString(), orderRequestDTO));
+        assertThrows(APIException.class, () -> orderService.order(loginSession.getAttribute("account").toString(), items));
     }
 
 }
