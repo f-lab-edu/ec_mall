@@ -21,7 +21,7 @@ public class OrderController {
      * @param session  email
      * @return
      */
-    @PostMapping("/orderSheet")
+    @PostMapping
     public ResponseEntity<OrderResponseDTO> orderProduct(@RequestBody @Valid OrderRequestDTO orderRequestDTO, HttpSession session) {
         orderService.order(session.getAttribute("account").toString(), orderRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).build();

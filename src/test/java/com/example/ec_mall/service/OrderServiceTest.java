@@ -17,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpSession;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +46,7 @@ public class OrderServiceTest {
     @DisplayName("주문성공 시 Mapper 호출 확인")
     void getProductSuccess(){
         OrderRequestDTO orderRequestDTO = OrderRequestDTO.builder()
-                .productId(29L)
+                .productId(List.of(29L,1L))
                 .size(ProductSize.XL)
                 .ordersCount(2)
                 .build();
