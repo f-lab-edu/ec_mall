@@ -41,7 +41,25 @@
                           LEFT JOIN product_images AS D ON A.product_id = D.product_id
         where A.product_id = #{productId}
     </select>
-    
+
+    <select id="productPage" resultMap="productInfo">
+        SELECT A.product_id,
+               A.name,
+               D.images_url,
+               C.category_big,
+               C.category_small
+        FROM product AS A LEFT JOIN product_category AS B ON A.product_id = B.product_id
+                          LEFT JOIN category AS C ON B.category_id = C.category_id
+                          LEFT JOIN product_images AS D ON A.product_id = D.product_id
+        ORDER BY product_id
+            LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="productPageCount" resultType="int">
+        SELECT COUNT(*)
+        FROM product
+    </select>
+
     <resultMap id="productInfo" type="com.example.ec_mall.dto.response.ProductResponseDTO$ResponseDTO">
         <id column="product_id" property="productId"/>
         <result column="name" property="name"/>

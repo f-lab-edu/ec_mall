@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import java.util.List;
 
@@ -32,7 +31,6 @@ class ProductServiceTest {
     private ProductService productService;
     private ProductRequestDTO productRequestDTO;
     private UpdateProductRequestDTO updateProductRequestDTO;
-    private ProductResponseDTO productResponseDTO;
 
     @BeforeEach
     void init() {

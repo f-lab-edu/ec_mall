@@ -9,7 +9,6 @@ import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,13 +18,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -281,10 +278,10 @@ class ProductControllerTest {
         doNothing().when(productService).deleteProduct(anyLong());
 
         mockMvc.perform(delete("/product/delete/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productRequestDTO)))
-                .andExpect(status().isOk())
-                .andDo(print());
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(objectMapper.writeValueAsString(productRequestDTO)))
+               .andExpect(status().isOk())
+               .andDo(print());
     }
     @Test
     @DisplayName("productId가 잘 못된 경우 상품 삭제를 실패해야한다.")
@@ -292,8 +289,8 @@ class ProductControllerTest {
         doNothing().when(productService).deleteProduct(anyLong());
 
         mockMvc.perform(delete("/product/delete/TEST"))
-                .andExpect(status().is4xxClientError())
-                .andDo(print());
+               .andExpect(status().is4xxClientError())
+               .andDo(print());
     }
     @Test
     @DisplayName("상품 조회 성공")
@@ -319,10 +316,10 @@ class ProductControllerTest {
         doThrow(new APIException(ErrorCode.NOT_FOUND_PRODUCT)).when(productService).getProduct(31L);
 
         mockMvc.perform(get("/product/31").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
-                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> productService.getProduct(31L)))
-                .andExpect(jsonPath("$.status").value(901))
-                .andExpect(jsonPath("$.message").value("없는 상품입니다."))
-                .andExpect(status().isBadRequest()).andDo(print());
+               .content(objectMapper.writeValueAsString(updateProductRequestDTO)))
+               .andExpect(result -> Assertions.assertThrows(APIException.class, () -> productService.getProduct(31L)))
+               .andExpect(jsonPath("$.status").value(901))
+               .andExpect(jsonPath("$.message").value("없는 상품입니다."))
+               .andExpect(status().isBadRequest()).andDo(print());
     }
 }

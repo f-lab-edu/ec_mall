@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -63,6 +62,9 @@ public class ProductService {
 
     /**
      * 상품 조회
+    /**
+     * 상품 조회
+     *
      * @param id 조회할 상품의 product_id
      */
     public List<ResponseDTO> getProduct(long id){
