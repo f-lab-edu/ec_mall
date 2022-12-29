@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ec_mall.mapper.OrderMapper">
+    <insert id="addOrder" parameterType="com.example.ec_mall.dao.OrderDao" useGeneratedKeys="true" keyProperty="orderId" >
+        insert into orders (account_id, orders_date, orders_price, created_by, created_date, updated_by, updated_date)
+        values (#{accountId}, now(), #{price}, #{createdBy}, now(), #{updatedBy}, now())
+    </insert>
+
+    <insert id="addProductOrder" parameterType="com.example.ec_mall.dao.ProductOrdersDao" useGeneratedKeys="true" keyProperty="productOrdersId">
+        insert into product_orders (orders_id, product_id, product_orders_count, created_by, created_date, updated_by, updated_date)
+        values (#{ordersId}, #{productId}, #{ordersCount}, #{createdBy}, now(), #{updatedBy}, now())
+    </insert>
+
+    <select id="findAccountByEmail" resultType="Long">
+        select account_id from account
+        WHERE email = #{email};
+    </select>
+
+    <select id="findPriceByProductId" resultType="integer">
+        select price from product
+        WHERE product_id = #{productId};
+    </select>
+
+    <select id="findStockByProductId" resultType="integer">
+        select stock from product
+        WHERE product_id = #{productId};
+    </select>
+
+    <update id="subtractionStock">
+        update product
+        set
+        <if test="stock != null">stock = #{stock}</if>
+        where product_id = #{id};
+    </update>
+</mapper>
