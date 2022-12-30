@@ -1,8 +1,10 @@
-package com.example.ec_mall.service;
+package com.example.ec_mall.integration;
 
-import com.example.ec_mall.dto.request.MemberRequestDTO.*;
+import com.example.ec_mall.dto.request.MemberRequestDTO.LoginDTO;
+import com.example.ec_mall.dto.request.MemberRequestDTO.RequestDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
+import com.example.ec_mall.service.MemberService;
 import com.example.ec_mall.util.SHA256;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
-public class MemberIntegrationServiceTest {
+public class MemberIntegrationTest {
     @Autowired
     MemberService memberService;
     RequestDTO requestDTO;

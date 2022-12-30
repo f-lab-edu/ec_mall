@@ -1,11 +1,14 @@
-package com.example.ec_mall.service;
+package com.example.ec_mall.integration;
 
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
 import com.example.ec_mall.dto.request.UpdateProductRequestDTO;
-import com.example.ec_mall.dto.response.ProductResponseDTO.*;
+import com.example.ec_mall.dto.response.ProductResponseDTO.CategoryResponseDTO;
+import com.example.ec_mall.dto.response.ProductResponseDTO.ProductImagesResponseDTO;
+import com.example.ec_mall.dto.response.ProductResponseDTO.ResponseDTO;
 import com.example.ec_mall.mapper.ProductMapper;
+import com.example.ec_mall.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-public class ProductServiceIntegrationTest {
+public class ProductIntegrationTest {
     @Autowired
     ProductService productService;
     @Autowired
@@ -51,7 +54,7 @@ public class ProductServiceIntegrationTest {
                 .bigCategory(ProductCategory.TOP)
                 .smallCategory(ProductCategory.TOP.getLong())
                 .build();
-        productService.updateProduct(updateProductRequestDTO, 1L);
+        productService.updateProduct(updateProductRequestDTO, 8L);
         assertThat(updateProductRequestDTO.getName()).isEqualTo("테스트11111");
     }
     @Test

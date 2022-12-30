@@ -1,4 +1,4 @@
-package com.example.ec_mall.service;
+package com.example.ec_mall.integration;
 
 import com.example.ec_mall.dao.OrderDao;
 import com.example.ec_mall.dao.ProductOrdersDao;
@@ -8,6 +8,7 @@ import com.example.ec_mall.dto.request.OrderRequestDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.OrderMapper;
+import com.example.ec_mall.service.OrderService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @Transactional
 @Log4j2
-public class OrderServiceIntegrationTest {
+public class OrderIntegrationTest {
     @Autowired
     OrderMapper orderMapper;
     @Autowired
@@ -43,8 +45,8 @@ public class OrderServiceIntegrationTest {
     void getProductSuccess(){
         OrderRequestDTO orderRequestDTO = OrderRequestDTO.builder()
                 .productId(8L)
-                .size(ProductSize.XL)
-                .ordersCount(2)
+                .size(ProductSize.S)
+                .ordersCount(1)
                 .build();
         List<OrderRequestDTO> items = List.of(orderRequestDTO);
 
