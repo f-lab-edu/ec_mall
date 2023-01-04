@@ -10,7 +10,8 @@
                 created_by,
                 created_date,
                 updated_by,
-                updated_date
+                updated_date,
+                roles
         ) values
         (
                 #{email},
@@ -19,7 +20,8 @@
                 #{createdBy},
                 now(),
                 #{updatedBy},
-                now()
+                now(),
+                #{roles}
         )
     </insert>
 
@@ -31,5 +33,10 @@
         select * from account
         where email = #{email}
           and password = #{password}
+    </select>
+
+    <select id="findByEmail" resultType="com.example.ec_mall.dao.MemberDao">
+        select * from account
+        where email = #{email}
     </select>
 </mapper>
