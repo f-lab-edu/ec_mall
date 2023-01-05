@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockHttpSession;
 
 import java.util.List;
 
@@ -28,23 +27,15 @@ public class OrderServiceTest {
     private OrderMapper orderMapper;
     @InjectMocks
     private OrderService orderService;
-    private MockHttpSession loginSession;
 
-    @BeforeEach
-    void login(){
+    @Test
+    @DisplayName("주문성공 시 Mapper 호출 확인")
+    void getProductSuccess(){
         LoginDTO loginDTO = MemberRequestDTO.LoginDTO.builder()
                 .email("test@naver.com")
                 .password("Test1234!@#$")
                 .build();
 
-        loginSession = new MockHttpSession();
-        loginSession.setAttribute("account", loginDTO.getEmail());
-
-    }
-
-    @Test
-    @DisplayName("주문성공 시 Mapper 호출 확인")
-    void getProductSuccess(){
         OrderRequestDTO orderRequestDTO = OrderRequestDTO.builder()
                 .productId(29L)
                 .size(ProductSize.XL)
@@ -61,16 +52,16 @@ public class OrderServiceTest {
         OrderDao orderDao = OrderDao.builder()
                 .accountId(1L)
                 .price(10000)
-                .createdBy(loginSession.getAttribute("account").toString())
-                .updatedBy(loginSession.getAttribute("account").toString())
+                .createdBy(loginDTO.getEmail())
+                .updatedBy(loginDTO.getEmail())
                 .build();
 
         ProductOrdersDao productOrdersDao = ProductOrdersDao.builder()
                 .ordersId(orderDao.getOrderId())
                 .productId(orderRequestDTO.getProductId())
                 .ordersCount(orderRequestDTO.getOrdersCount())
-                .createdBy(loginSession.getAttribute("account").toString())
-                .updatedBy(loginSession.getAttribute("account").toString())
+                .createdBy(loginDTO.getEmail())
+                .updatedBy(loginDTO.getEmail())
                 .build();
 
         when(orderMapper.findStockByProductId(29L)).thenReturn(3);      // select before stock
@@ -80,7 +71,7 @@ public class OrderServiceTest {
         doNothing().when(orderMapper).addProductOrder(productOrdersDao);     // insert orderTable
         doNothing().when(orderMapper).subtractionStock(29L, 1);     // update after stock
 
-        orderService.order(loginSession.getAttribute("account").toString(), items);
+        orderService.order(loginDTO.getEmail(), items);
 
         verify(orderMapper, times(1)).findStockByProductId(29L);
         verify(orderMapper, times(1)).findPriceByProductId(29L);
@@ -92,6 +83,11 @@ public class OrderServiceTest {
     @Test
     @DisplayName("재고 없을시 주문 실패 : API Exception 발생")
     void OrderFail(){
+        LoginDTO loginDTO = MemberRequestDTO.LoginDTO.builder()
+                .email("test@naver.com")
+                .password("Test1234!@#$")
+                .build();
+
         OrderRequestDTO orderRequestDTO = OrderRequestDTO.builder()
                 .productId(29L)
                 .size(ProductSize.XL)
@@ -99,7 +95,7 @@ public class OrderServiceTest {
                 .build();
         List<OrderRequestDTO> items = List.of(orderRequestDTO);
         when(orderMapper.findStockByProductId(29L)).thenReturn(0);
-        assertThrows(APIException.class, () -> orderService.order(loginSession.getAttribute("account").toString(), items));
+        assertThrows(APIException.class, () -> orderService.order(loginDTO.getEmail(), items));
     }
 
 }

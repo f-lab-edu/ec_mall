@@ -5,6 +5,7 @@ import com.example.ec_mall.jwt.JwtAuthenticationEntryPoint;
 import com.example.ec_mall.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -65,7 +66,11 @@ public class SecurityConfig {
                         "/member/logout"
 
                 ).permitAll()
-                .antMatchers("/product*").hasRole("SELLER")
+                .antMatchers(HttpMethod.POST, "/product*").hasRole("SELLER")
+                .antMatchers(HttpMethod.PATCH, "/product*").hasRole("SELLER")
+                .antMatchers(HttpMethod.DELETE, "/product*").hasRole("SELLER")
+                .antMatchers(HttpMethod.GET, "/product*").hasRole("USER")
+                .antMatchers("/order*").hasRole("USER")
                 .anyRequest().authenticated();
 
         // 세션사용하지 않음

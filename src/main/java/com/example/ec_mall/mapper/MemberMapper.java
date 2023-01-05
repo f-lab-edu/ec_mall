@@ -4,6 +4,7 @@ import com.example.ec_mall.dao.MemberDao.UserDao;
 import com.example.ec_mall.dao.MemberDao.RoleDao;
 import org.apache.ibatis.annotations.Mapper;
 
+
 /**
  * @Mapper
  * - Marker interface for MyBatis mappers.
@@ -20,6 +21,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface MemberMapper {
     int signUpMember(UserDao memberDao);
     void signUpRole(RoleDao roleDao);
+    void addRole(RoleDao roleDao);
     int emailCheck(String email);
     UserDao findByEmailPassword(String email, String password);
     UserDao findByEmail(String email);

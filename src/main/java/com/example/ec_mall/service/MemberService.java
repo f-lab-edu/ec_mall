@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -63,7 +65,12 @@ public class MemberService {
                 .accountId(member.getAccountId())
                 .roles(memberRequestDTO.getRoles())
                 .build();
-        memberMapper.signUpRole(memberRole);
+        if(Objects.equals(memberRequestDTO.getRoles(), "SELLER")) {
+            memberMapper.signUpRole(memberRole);
+            memberRole.setRoles("USER");
+            memberMapper.addRole(memberRole);
+        }
+        else memberMapper.signUpRole(memberRole);
     }
 
     private boolean isDuplicatedEmail(String email){
@@ -91,6 +98,7 @@ public class MemberService {
                         loginDTO.getPassword()
                 )
         );
+        System.out.println(authentication);
         TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
 
         return tokenDto;
