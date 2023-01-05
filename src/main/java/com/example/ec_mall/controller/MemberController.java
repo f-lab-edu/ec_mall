@@ -41,15 +41,13 @@ public class MemberController {
      */
     @PostMapping("/signIn")
     public ResponseEntity<TokenDto> signIn(@Valid @RequestBody LoginDTO loginDTO) {
-        System.out.println(loginDTO);
         TokenDto tokenDto = memberService.login(loginDTO);
-        System.out.println(tokenDto);
         return ResponseEntity.status(OK).body(tokenDto);
     }
 
-    @GetMapping("/logout")
-    public ResponseEntity<Object> logout(HttpSession session){
-        session.removeAttribute("account");
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
+//    @GetMapping("/logout")
+//    public ResponseEntity<Object> logout(HttpSession session){
+//        session.removeAttribute("account");
+//        return ResponseEntity.status(HttpStatus.OK).build();
+//    }
 }

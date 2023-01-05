@@ -93,7 +93,7 @@ public class MemberControllerTest {
         session = new MockHttpSession();
         session.setAttribute("account", loginDTO.getEmail());
 
-        doNothing().when(memberService).login(loginDTO.getEmail(), loginDTO.getPassword());
+        doNothing().when(memberService).login(loginDTO);
         mockMvc.perform(post("/member/login").session(session).contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsBytes(loginDTO)))
                 .andExpect(result -> Assertions.assertEquals(session.getAttribute("account"), "test@naver.com"))
@@ -108,10 +108,10 @@ public class MemberControllerTest {
                 .password("Test1234!@#$")
                 .build();
 
-        doThrow(new APIException(ErrorCode.NOT_FOUND_ACCOUNT)).when(memberService).login(loginDTO.getEmail(), loginDTO.getPassword());
+        doThrow(new APIException(ErrorCode.NOT_FOUND_ACCOUNT)).when(memberService).login(loginDTO);
         mockMvc.perform(post("/member/login").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsBytes(loginDTO)))
-                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> memberService.login(loginDTO.getEmail(), loginDTO.getPassword())))
+                .andExpect(result -> Assertions.assertThrows(APIException.class, () -> memberService.login(loginDTO)))
                 .andExpect(jsonPath("$.status").value(802))
                 .andExpect(jsonPath("$.message").value("아이디 또는 비밀번호를 확인해주세요."))
                 .andDo(print());

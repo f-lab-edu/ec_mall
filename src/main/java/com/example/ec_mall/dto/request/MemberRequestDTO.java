@@ -28,6 +28,9 @@ public class MemberRequestDTO {
         @NotBlank(message = "비밀번호를 입력하세요")
         @Pattern(regexp = "(?=.*[0-9])(?=.*[A-Za-z])(?=.*\\W)(?=\\S+$).{8,16}", message = "8 ~ 16자로 생성하세요. 대소문자, 특수문자, 숫자를 포함하여야 합니다.")
         private String password;
+
+        @NotBlank(message = "일반회원(USER), 판매자(SELLER) 중 선택하세요.")
+        private String roles;
     }
     @Data
     @Builder

@@ -12,49 +12,63 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class MemberDao implements UserDetails {
-    private Long id;
-    private String email;
-    private String nickName;
-    private String password;
-    private String createdBy;
-    private LocalDateTime createdDate;
-    private String updatedBy;
-    private LocalDateTime updatedDate;
-    private String roles;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        ArrayList<GrantedAuthority> roleList = new ArrayList<>();
-        roleList.add(new SimpleGrantedAuthority(roles));
-        return roleList;
+public class MemberDao {
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RoleDao {
+        private Long accountId;
+        private Long authorityId;
+        private String roles;
+        private LocalDateTime createdDate;
+        private LocalDateTime updatedDate;
     }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserDao implements UserDetails {
+        private Long accountId;
+        private String email;
+        private String nickName;
+        private String password;
+        private String createdBy;
+        private LocalDateTime createdDate;
+        private String updatedBy;
+        private LocalDateTime updatedDate;
+        private RoleDao roles;
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities () {
+            ArrayList<GrantedAuthority> roleList = new ArrayList<>();
+            roleList.add(new SimpleGrantedAuthority(roles.getRoles()));
+            return roleList;
+        }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
+        @Override
+        public String getUsername () {
+            return email;
+        }
+        @Override
+        public boolean isAccountNonExpired () {
+            return false;
+        }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
+        @Override
+        public boolean isAccountNonLocked () {
+            return false;
+        }
 
-    @Override
-    public boolean isEnabled() {
-        return false;
+        @Override
+        public boolean isCredentialsNonExpired () {
+            return false;
+        }
+
+        @Override
+        public boolean isEnabled () {
+            return false;
+        }
     }
 }

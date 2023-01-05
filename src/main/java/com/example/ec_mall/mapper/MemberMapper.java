@@ -1,6 +1,7 @@
 package com.example.ec_mall.mapper;
 
-import com.example.ec_mall.dao.MemberDao;
+import com.example.ec_mall.dao.MemberDao.UserDao;
+import com.example.ec_mall.dao.MemberDao.RoleDao;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -17,8 +18,9 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MemberMapper {
-    int signUpMember(MemberDao memberDao);
+    int signUpMember(UserDao memberDao);
+    void signUpRole(RoleDao roleDao);
     int emailCheck(String email);
-    MemberDao findByEmailPassword(String email, String password);
-    MemberDao findByEmail(String email);
+    UserDao findByEmailPassword(String email, String password);
+    UserDao findByEmail(String email);
 }

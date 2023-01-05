@@ -1,6 +1,7 @@
 package com.example.ec_mall.service;
 
-import com.example.ec_mall.dao.MemberDao;
+import com.example.ec_mall.dao.MemberDao.UserDao;
+import com.example.ec_mall.dao.MemberDao.RoleDao;
 import com.example.ec_mall.dto.jwt.TokenDto;
 import com.example.ec_mall.dto.request.MemberRequestDTO.LoginDTO;
 import com.example.ec_mall.dto.request.MemberRequestDTO.RequestDTO;
@@ -16,10 +17,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Transactional
 public class MemberService {
 
     private final MemberMapper memberMapper;
@@ -28,13 +31,11 @@ public class MemberService {
     private final AuthenticationManager authenticationManager;
 
     public void signUpMember(RequestDTO memberRequestDTO) {
-        MemberDao member = MemberDao.builder()
+        UserDao member = UserDao.builder()
                 .email(memberRequestDTO.getEmail())
                 .nickName(memberRequestDTO.getNickName())
                 .password(bCryptPasswordEncoder.encode(memberRequestDTO.getPassword()))
                 .createdBy(memberRequestDTO.getEmail())
-                //처음 가입시에는 USER 권한으로 가입, 추후에 상품등록, 수정 할 수 있는 권한 추가
-                .roles("USER")
                 .build();
 
         /**
@@ -58,6 +59,11 @@ public class MemberService {
             log.error("registration ERROR! {}", member);
             throw new RuntimeException("회원가입 메소드 확인\n" + member);
         }
+        RoleDao memberRole = RoleDao.builder()
+                .accountId(member.getAccountId())
+                .roles(memberRequestDTO.getRoles())
+                .build();
+        memberMapper.signUpRole(memberRole);
     }
 
     private boolean isDuplicatedEmail(String email){
@@ -69,17 +75,16 @@ public class MemberService {
      * @param loginDTO 회원가입시 입력한 email, password
      * @return
      *
-     * 아이디 혹은 비밀번호가 잘못되어 로그인 실패시 아이디가 틀렸는지 비밀번호가 틀렸는지 알려주지 않는다.
-     * 그래서 sql이 실패하면 Null값으로 분기처리.
+     * 원본 문자열이 같더라도 매번 인코딩할 때 마다 결과 값이 달라지므로 기존 구현된 것과 달리 PasswordEncoder의 matches 메소드를 사용. (Jwt 적용)
      */
 
     public TokenDto login(LoginDTO loginDTO){
-//        String encryptPassword = bCryptPasswordEncoder.encode(loginDTO.getPassword());
-//        MemberDao memberInfo = memberMapper.findByEmailPassword(loginDTO.getEmail(),encryptPassword);
-//        if(memberInfo == null){
-//            log.error("Invalid Login");
-//            throw new APIException(ErrorCode.NOT_FOUND_ACCOUNT);
-//        }
+        UserDao memberInfo = memberMapper.findByEmail(loginDTO.getEmail());
+
+        if(!bCryptPasswordEncoder.matches(loginDTO.getPassword(), memberInfo.getPassword())){
+            log.error("Invalid Login");
+            throw new APIException(ErrorCode.NOT_FOUND_ACCOUNT);
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getEmail(),
