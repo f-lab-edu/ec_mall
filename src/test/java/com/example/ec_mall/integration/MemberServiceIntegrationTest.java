@@ -10,62 +10,58 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@SpringBootTest
-@Transactional
-public class MemberIntegrationTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class MemberServiceIntegrationTest {
     @Autowired
-    MemberService memberService;
-    RequestDTO requestDTO;
-    LoginDTO loginDTO;
+    private MemberService memberService;
+    private RequestDTO requestDTO;
+    private LoginDTO loginDTO;
 
     @Test
     @DisplayName("회원가입 성공")
     void signUpTestSuccess(){
         requestDTO = RequestDTO.builder()
-                .email("est@test.com")
-                .nickName("test")
+                .email("test11@test.com")
+                .nickName("test1")
                 .password(SHA256.encrypt("testPassword1!"))
                 .build();
         memberService.signUpMember(requestDTO);
+        assertThat(requestDTO).isNotNull();
     }
     @Test
     @DisplayName("회원가입 실패 : 중복된 이메일")
     void signUpTestEmailCheck(){
         requestDTO = RequestDTO.builder()
-                .email("est@test.com")
+                .email("test11@test.com")
                 .nickName("test12")
                 .password(SHA256.encrypt("passwordTest12"))
                 .build();
-
         APIException exception = assertThrows(APIException.class, () -> memberService.signUpMember(requestDTO));
-        assertEquals(ErrorCode.ALREADY_SAVED_EMAIL, exception.getErrorCode());
+        assertThat(ErrorCode.ALREADY_SAVED_EMAIL).isEqualTo(exception.getErrorCode());
     }
     @Test
     @DisplayName("로그인 성공")
     void loginSuccess(){
         loginDTO = LoginDTO.builder()
-                .email("est@test.com")
+                .email("test11@test.com")
                 .password(SHA256.encrypt("testPassword1!"))
                 .build();
         memberService.login(loginDTO.getEmail(), loginDTO.getPassword());
-        assertThat(loginDTO.getEmail()).isEqualTo("est@test.com");
+        assertThat(loginDTO.getEmail()).isEqualTo("test11@test.com");
     }
     @Test
     @DisplayName("로그인 실패 : password가 다를 경우 Exception(NOT_FOUNT_ACCOUNT) 발생")
     void loginFail(){
         loginDTO = LoginDTO.builder()
-                .email("est@test.com")
+                .email("test11@test.com")
                 .password(SHA256.encrypt("Test1234!@#$"))
                 .build();
-
         APIException exception = assertThrows(APIException.class, () -> memberService.login(loginDTO.getEmail(), loginDTO.getPassword()));
-        assertEquals(ErrorCode.NOT_FOUND_ACCOUNT, exception.getErrorCode());
+        assertThat(ErrorCode.NOT_FOUND_ACCOUNT).isEqualTo(exception.getErrorCode());
     }
 }

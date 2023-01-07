@@ -1,5 +1,6 @@
 package com.example.ec_mall.integration;
 
+import com.example.ec_mall.dao.UpdateProductDao;
 import com.example.ec_mall.dto.enums.ProductCategory;
 import com.example.ec_mall.dto.enums.ProductSize;
 import com.example.ec_mall.dto.request.ProductRequestDTO;
@@ -13,14 +14,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringBootTest
-@Transactional
-public class ProductIntegrationTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class ProductServiceIntegrationTest {
     @Autowired
     ProductService productService;
     @Autowired
@@ -39,13 +38,15 @@ public class ProductIntegrationTest {
                 .bigCategory(ProductCategory.TOP)
                 .smallCategory(ProductCategory.TOP.getShort())
                 .build();
+
         productService.addProduct(productRequestDTO);
+        assertThat(productRequestDTO).isNotNull();
     }
     @Test
     @DisplayName("상품 수정 성공")
     void updateSuccess(){
         UpdateProductRequestDTO updateProductRequestDTO = UpdateProductRequestDTO.builder()
-                .name("테스트11111")
+                .name("테스트122")
                 .price(50000)
                 .size(ProductSize.S)
                 .stock(30)
@@ -54,8 +55,23 @@ public class ProductIntegrationTest {
                 .bigCategory(ProductCategory.TOP)
                 .smallCategory(ProductCategory.TOP.getLong())
                 .build();
-        productService.updateProduct(updateProductRequestDTO, 8L);
-        assertThat(updateProductRequestDTO.getName()).isEqualTo("테스트11111");
+
+        UpdateProductDao updateProductDao = UpdateProductDao.builder()
+                .productId(10L)
+                .categoryId(0L)
+                .name(updateProductRequestDTO.getName())
+                .price(updateProductRequestDTO.getPrice())
+                .size(updateProductRequestDTO.getSize())
+                .stock(updateProductRequestDTO.getStock())
+                .info(updateProductRequestDTO.getInfo())
+                .imagesUrl(updateProductRequestDTO.getImagesUrl())
+                .bigCategory(updateProductRequestDTO.getBigCategory())
+                .smallCategory(updateProductRequestDTO.getSmallCategory())
+                .updatedBy("admin")
+                .build();
+
+        productService.updateProduct(updateProductRequestDTO, 10L);
+        assertThat(updateProductDao.getProductId()).isEqualTo(10L);
     }
     @Test
     @DisplayName("상품 조회 성공")
