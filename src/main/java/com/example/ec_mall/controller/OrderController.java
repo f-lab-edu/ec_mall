@@ -18,12 +18,12 @@ public class OrderController {
     private final OrderService orderService;
     /**
      * @param items  여러건에 대한 상품 ID, 사이즈, 수량
-     * @param session  email
+     * @param email  email
      * @return
      */
     @PostMapping
-    public ResponseEntity<List<OrderRequestDTO>> orderProduct(@RequestBody @Valid List<OrderRequestDTO> items, HttpSession session) {
-        orderService.order(session.getAttribute("account").toString(), items);
+    public ResponseEntity<List<OrderRequestDTO>> orderProduct(@RequestBody @Valid String email, List<OrderRequestDTO> items) {
+        orderService.order(email, items);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

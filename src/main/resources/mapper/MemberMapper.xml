@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ec_mall.mapper.MemberMapper">
-    <insert id="signUpMember" parameterType="com.example.ec_mall.dao.MemberDao" useGeneratedKeys="true" keyProperty="id" >
+    <insert id="signUpMember" parameterType="com.example.ec_mall.dao.MemberDao$UserDao" useGeneratedKeys="true" keyProperty="accountId" >
         insert into account
         (
                 email,
@@ -20,16 +20,71 @@
                 now(),
                 #{updatedBy},
                 now()
-        )
+        );
     </insert>
+    <insert id="signUpRole" parameterType="com.example.ec_mall.dao.MemberDao$RoleDao">
+        insert into authority
+        (
+            account_id,
+            role,
+            created_date,
+            updated_date
+        ) values
+            (
+                #{accountId},
+                #{roles},
+                now(),
+                now()
+            )
+    </insert>
+    <insert id = "addRole" parameterType="com.example.ec_mall.dao.MemberDao$RoleDao">
+        insert into authority
+        (
+            account_id,
+            role,
+            created_date,
+            updated_date
+        ) values
+            (
+                #{accountId},
+                #{roles},
+                now(),
+                now()
+            )
+    </insert>
+    <resultMap id="memberInfo" type="com.example.ec_mall.dao.MemberDao$UserDao">
+        <id column="account_id" property="accountId"/>
+        <result column="email" property="email"/>
+        <result column="nickname" property="nickName"/>
+        <result column="password" property="password"/>
+        <association property="roles" resultMap="roleInfo"/>
+    </resultMap>
+    <resultMap id="roleInfo" type="com.example.ec_mall.dao.MemberDao$RoleDao">
+        <id column="authority_id" property="authorityId"/>
+        <result column="role" property="roles"/>
+    </resultMap>
 
     <select id = "emailCheck" resultType="int">
         select count(email) from account where email = #{email}
     </select>
 
-    <select id="findByEmailPassword" resultType="com.example.ec_mall.dao.MemberDao">
-        select * from account
+    <select id="findByEmailPassword" resultMap="memberInfo">
+        select A.account_id,
+               A.email,
+               A.nickname,
+               B.role
+        from account as A LEFT JOIN authority as B ON A.account_id = B.account_id
         where email = #{email}
           and password = #{password}
+    </select>
+
+    <select id="findByEmail" resultMap="memberInfo">
+        select A.account_id,
+               A.email,
+               A.password,
+               A.nickname,
+               B.role
+        from account as A LEFT JOIN authority as B ON A.account_id = B.account_id
+        where email = #{email}
     </select>
 </mapper>
