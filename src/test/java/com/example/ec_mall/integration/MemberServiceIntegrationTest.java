@@ -51,7 +51,7 @@ public class MemberServiceIntegrationTest {
                 .email("test11@test.com")
                 .password(SHA256.encrypt("testPassword1!"))
                 .build();
-        memberService.login(loginDTO.getEmail(), loginDTO.getPassword());
+        memberService.login(loginDTO);
         assertThat(loginDTO.getEmail()).isEqualTo("test11@test.com");
     }
     @Test
@@ -61,7 +61,7 @@ public class MemberServiceIntegrationTest {
                 .email("test11@test.com")
                 .password(SHA256.encrypt("Test1234!@#$"))
                 .build();
-        APIException exception = assertThrows(APIException.class, () -> memberService.login(loginDTO.getEmail(), loginDTO.getPassword()));
+        APIException exception = assertThrows(APIException.class, () -> memberService.login(loginDTO));
         assertThat(ErrorCode.NOT_FOUND_ACCOUNT).isEqualTo(exception.getErrorCode());
     }
 }

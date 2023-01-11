@@ -2,7 +2,7 @@ package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.MemberDao.UserDao;
 import com.example.ec_mall.dao.MemberDao.RoleDao;
-import com.example.ec_mall.dto.jwt.TokenDto;
+import com.example.ec_mall.dto.response.SignInResponseDto;
 import com.example.ec_mall.dto.request.MemberRequestDTO.LoginDTO;
 import com.example.ec_mall.dto.request.MemberRequestDTO.RequestDTO;
 import com.example.ec_mall.exception.APIException;
@@ -85,7 +85,7 @@ public class MemberService {
      * 원본 문자열이 같더라도 매번 인코딩할 때 마다 결과 값이 달라지므로 기존 구현된 것과 달리 PasswordEncoder의 matches 메소드를 사용. (Jwt 적용)
      */
 
-    public TokenDto login(LoginDTO loginDTO){
+    public SignInResponseDto login(LoginDTO loginDTO){
         UserDao memberInfo = memberMapper.findByEmail(loginDTO.getEmail());
 
         if(!bCryptPasswordEncoder.matches(loginDTO.getPassword(), memberInfo.getPassword())){
@@ -99,8 +99,8 @@ public class MemberService {
                 )
         );
         System.out.println(authentication);
-        TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
+        SignInResponseDto signInResponseDto = jwtTokenProvider.generateToken(authentication);
 
-        return tokenDto;
+        return signInResponseDto;
     }
 }

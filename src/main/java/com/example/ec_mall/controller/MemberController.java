@@ -1,6 +1,6 @@
 package com.example.ec_mall.controller;
 
-import com.example.ec_mall.dto.jwt.TokenDto;
+import com.example.ec_mall.dto.response.SignInResponseDto;
 import com.example.ec_mall.dto.request.MemberRequestDTO;
 import com.example.ec_mall.dto.request.MemberRequestDTO.LoginDTO;
 import com.example.ec_mall.dto.request.MemberRequestDTO.RequestDTO;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -40,14 +39,8 @@ public class MemberController {
      * @return
      */
     @PostMapping("/signIn")
-    public ResponseEntity<TokenDto> signIn(@Valid @RequestBody LoginDTO loginDTO) {
-        TokenDto tokenDto = memberService.login(loginDTO);
-        return ResponseEntity.status(OK).body(tokenDto);
+    public ResponseEntity<SignInResponseDto> signIn(@Valid @RequestBody LoginDTO loginDTO) {
+        SignInResponseDto signInResponseDto = memberService.login(loginDTO);
+        return ResponseEntity.status(OK).body(signInResponseDto);
     }
-
-//    @GetMapping("/logout")
-//    public ResponseEntity<Object> logout(HttpSession session){
-//        session.removeAttribute("account");
-//        return ResponseEntity.status(HttpStatus.OK).build();
-//    }
 }

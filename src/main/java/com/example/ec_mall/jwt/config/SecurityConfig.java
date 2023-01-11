@@ -1,11 +1,11 @@
-package com.example.ec_mall.config;
+package com.example.ec_mall.jwt.config;
 
 import com.example.ec_mall.jwt.JwtAccessDeniedHandler;
 import com.example.ec_mall.jwt.JwtAuthenticationEntryPoint;
+import com.example.ec_mall.jwt.JwtTokenFilter;
 import com.example.ec_mall.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @EnableWebSecurity
@@ -62,15 +63,8 @@ public class SecurityConfig {
                 .antMatchers(
                         "/",
                         "/member/signUp",
-                        "/member/signIn",
-                        "/member/logout"
-
+                        "/member/signIn"
                 ).permitAll()
-                .antMatchers(HttpMethod.POST, "/product*").hasRole("SELLER")
-                .antMatchers(HttpMethod.PATCH, "/product*").hasRole("SELLER")
-                .antMatchers(HttpMethod.DELETE, "/product*").hasRole("SELLER")
-                .antMatchers(HttpMethod.GET, "/product*").hasRole("USER")
-                .antMatchers("/order*").hasRole("USER")
                 .anyRequest().authenticated();
 
         // 세션사용하지 않음
@@ -85,7 +79,8 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint);
 
         // jwt 적용
-        http.apply(new JwtSecurityConfig(jwtTokenProvider));
+        JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider);
+        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -1,6 +1,6 @@
 package com.example.ec_mall.jwt;
 
-import com.example.ec_mall.dto.jwt.TokenDto;
+import com.example.ec_mall.dto.response.SignInResponseDto;
 import com.example.ec_mall.exception.JwtCustomException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class JwtTokenProvider {
      * @param authentication
      * @return
      */
-    public TokenDto generateToken(Authentication authentication) {
+    public SignInResponseDto generateToken(Authentication authentication) {
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -52,16 +52,9 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
-        // Refresh Token 생성
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + refreshExpiredTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-
-        return TokenDto.builder()
+        return SignInResponseDto.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .build();
     }
 

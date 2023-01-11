@@ -1,4 +1,4 @@
-package com.example.ec_mall.service;
+package com.example.ec_mall.jwt;
 
 import com.example.ec_mall.dao.MemberDao;
 import com.example.ec_mall.mapper.MemberMapper;
