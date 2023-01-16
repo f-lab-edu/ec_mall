@@ -13,12 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -48,6 +46,7 @@ class ProductControllerIntegrationTest {
                 .build();
     }
     @Test
+    @WithMockUser
     @DisplayName("상품 등록 성공")
     void addProduct() throws Exception {
         mockMvc.perform(post("/product")
@@ -57,6 +56,7 @@ class ProductControllerIntegrationTest {
                .andExpect(status().isCreated());
     }
     @Test
+    @WithMockUser
     @DisplayName("상품명에 null, 공백이 들어갈 경우 실패해야한다.")
     void addProductNotBlank() throws Exception{
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
@@ -76,6 +76,7 @@ class ProductControllerIntegrationTest {
                .andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("사이즈, 상품 상세 설명, 이미지URL, 카테고리, 소카테고리에 null이 들어갈 경우 실패해야한다.")
     void addProductNotNull() throws Exception{
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
@@ -95,6 +96,7 @@ class ProductControllerIntegrationTest {
                .andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("가격과 재고에 음수 값이 입력되면 실패해야한다.")
     void addProductPOZ() throws Exception{
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
@@ -114,6 +116,7 @@ class ProductControllerIntegrationTest {
                .andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("상품명과 상품 상세 설명의 글자수가 45자, 100자가 넘어갈 경우 실패해야한다.")
     void addProductSize() throws Exception{
         ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
@@ -134,6 +137,7 @@ class ProductControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("상품 수정 성공")
     void updateProduct() throws Exception {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
@@ -154,6 +158,7 @@ class ProductControllerIntegrationTest {
                .andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("상품명과 상품 상세 설명의 글자수가 45자, 100자가 넘어갈 경우 실패해야한다.")
     void updateProductStringLimit() throws Exception {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
@@ -175,6 +180,7 @@ class ProductControllerIntegrationTest {
                .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("상품명에 null, 공백이 들어갈 경우 실패해야한다.")
     void updateProductNameFail() throws Exception {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
@@ -195,6 +201,7 @@ class ProductControllerIntegrationTest {
                .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("재고나 가격에 음수가 들어가면 실패해야한다.")
     void updateProductNegativeFail() throws Exception {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
@@ -216,6 +223,7 @@ class ProductControllerIntegrationTest {
                .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("사이즈, 카테고리(big, small), 정보에 Null값이 들어가면 실패해야 한다.")
     void updateProductNull() throws Exception {
         updateProductRequestDTO = UpdateProductRequestDTO.builder()
@@ -239,6 +247,7 @@ class ProductControllerIntegrationTest {
                .andExpect(status().isBadRequest()).andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("관리자가 상품 삭제를 성공한다.")
     void deleteProduct() throws Exception {
         mockMvc.perform(delete("/product/delete/1")
@@ -248,6 +257,7 @@ class ProductControllerIntegrationTest {
                .andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("productId가 잘 못된 경우 상품 삭제를 실패해야한다.")
     void deleteProductError() throws Exception{
         mockMvc.perform(delete("/product/delete/TEST"))
@@ -255,6 +265,7 @@ class ProductControllerIntegrationTest {
                .andDo(print());
     }
     @Test
+    @WithMockUser
     @DisplayName("상품 조회 성공")
     void getProduct() throws Exception {
         ProductResponseDTO.ResponseDTO response = ProductResponseDTO.ResponseDTO.builder()

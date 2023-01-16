@@ -1,7 +1,6 @@
 package com.example.ec_mall.integration;
 
 import com.example.ec_mall.dto.request.MemberRequestDTO.*;
-import com.example.ec_mall.util.SHA256;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +32,7 @@ public class MemberControllerIntegrationTest {
                 .email("test@test.com")
                 .password("testPassword1!")
                 .nickName("test")
+                .roles("USER")
                 .build();
     }
     @Test
@@ -77,11 +77,11 @@ public class MemberControllerIntegrationTest {
     @DisplayName("로그인 성공")
     void loginSuccess() throws Exception{
         loginDTO = LoginDTO.builder()
-                .email("est@test.com")
-                .password(SHA256.encrypt("testPassword1!"))
+                .email("test@test.com")
+                .password("testPassword1!")
                 .build();
 
-        mockMvc.perform(post("/member/login")
+        mockMvc.perform(post("/member/signIn")
                .contentType(MediaType.APPLICATION_JSON)
                .content(objectMapper.writeValueAsBytes(loginDTO)))
                .andExpect(status().isOk())
@@ -91,11 +91,11 @@ public class MemberControllerIntegrationTest {
     @DisplayName("로그인 실패")
     void loginFail() throws Exception{
         loginDTO = LoginDTO.builder()
-                .email("est@test.com")
-                .password(SHA256.encrypt("Test1234!@#$"))
+                .email("test@test.com")
+                .password("Test1234!@#$")
                 .build();
 
-        mockMvc.perform(post("/member/login")
+        mockMvc.perform(post("/member/signIn")
                .contentType(MediaType.APPLICATION_JSON)
                .content(objectMapper.writeValueAsBytes(loginDTO)))
                .andExpect(jsonPath("$.status").value(802))

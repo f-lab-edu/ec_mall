@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockHttpSession;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +30,6 @@ public class OrderServiceIntegrationTest {
     @Autowired
     private OrderService orderService;
     private LoginDTO loginDTO;
-    private MockHttpSession loginSession;
 
     @BeforeEach
     void login(){
@@ -38,8 +37,6 @@ public class OrderServiceIntegrationTest {
                 .email("test@test.com")
                 .password(SHA256.encrypt("testPassword1!"))
                 .build();
-        loginSession = new MockHttpSession();
-        loginSession.setAttribute("account", loginDTO.getEmail());
     }
 
     @Test
@@ -55,19 +52,19 @@ public class OrderServiceIntegrationTest {
         OrderDao orderDao = OrderDao.builder()
                 .accountId(8L)
                 .price(10000)
-                .createdBy(loginSession.getAttribute("account").toString())
-                .updatedBy(loginSession.getAttribute("account").toString())
+                .createdBy(loginDTO.getEmail())
+                .updatedBy(loginDTO.getEmail())
                 .build();
 
         ProductOrdersDao productOrdersDao = ProductOrdersDao.builder()
                 .ordersId(orderDao.getOrderId())
                 .productId(orderRequestDTO.getProductId())
                 .ordersCount(orderRequestDTO.getOrdersCount())
-                .createdBy(loginSession.getAttribute("account").toString())
-                .updatedBy(loginSession.getAttribute("account").toString())
+                .createdBy(loginDTO.getEmail())
+                .updatedBy(loginDTO.getEmail())
                 .build();
 
-        orderService.order(loginSession.getAttribute("account").toString(), items);
+        orderService.order(loginDTO.getEmail(), items);
 
         verify(orderMapper, times(1)).findStockByProductId(8L);
         verify(orderMapper, times(1)).findPriceByProductId(8L);

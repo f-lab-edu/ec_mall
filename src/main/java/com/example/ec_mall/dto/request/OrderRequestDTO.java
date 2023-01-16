@@ -8,6 +8,8 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderRequestDTO {
     //선택한 상품
     private long productId;

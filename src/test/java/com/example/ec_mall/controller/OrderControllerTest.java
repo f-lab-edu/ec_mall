@@ -9,14 +9,13 @@ import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -27,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(OrderController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class OrderControllerTest {
 
     @Autowired
@@ -50,8 +50,8 @@ public class OrderControllerTest {
                 .size(ProductSize.XL)
                 .ordersCount(2)
                 .build();
-        List<OrderRequestDTO> items = List.of(orderRequestDTO);
-        doNothing().when(orderService).order(loginDTO.getEmail(), items);
+        List<OrderRequestDTO> orders = List.of(orderRequestDTO);
+        doNothing().when(orderService).order(loginDTO.getEmail(), orders);
         mockMvc.perform(post("/order").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(orderRequestDTO)))
                 .andExpect(status().isOk()).andDo(print());
