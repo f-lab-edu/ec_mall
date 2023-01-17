@@ -4,6 +4,7 @@ import com.example.ec_mall.exception.JwtCustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -14,6 +15,7 @@ import java.io.IOException;
 
 // Request 이전에 1회 작동할 필터
 @RequiredArgsConstructor
+@Component
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 

@@ -98,7 +98,6 @@ public class MemberService {
                         loginDTO.getPassword()
                 )
         );
-        System.out.println(authentication);
         SignInResponseDto signInResponseDto = jwtTokenProvider.generateToken(authentication);
 
         return signInResponseDto;

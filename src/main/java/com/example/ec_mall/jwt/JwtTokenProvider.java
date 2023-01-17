@@ -28,8 +28,6 @@ public class JwtTokenProvider {
 
     @Value("${jwt.token.expire-length}")
     private long expireTime;
-    @Value("${jwt.token.refreshExpire-length}")
-    private long refreshExpiredTime;
 
     /**
      * 적절한 설정을 통해 토큰을 생성하여 반환
@@ -69,7 +67,7 @@ public class JwtTokenProvider {
         Claims claims = parseClaims(accessToken);
 
         if (claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new JwtCustomException("권한 정보가 업습니다.", HttpStatus.UNAUTHORIZED);
         }
 
         // 클레임에서 권한 정보 가져오기
@@ -84,6 +82,7 @@ public class JwtTokenProvider {
     }
     /**
      * http 헤더로부터 bearer 토큰을 가져옴.
+     * Bearer -> JWT 혹은 OAuth에 대한 토큰을 사용한다. (RFC 6750)
      * @param req
      * @return
      */

@@ -3,7 +3,6 @@ package com.example.ec_mall.jwt.config;
 import com.example.ec_mall.jwt.JwtAccessDeniedHandler;
 import com.example.ec_mall.jwt.JwtAuthenticationEntryPoint;
 import com.example.ec_mall.jwt.JwtTokenFilter;
-import com.example.ec_mall.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,9 +33,9 @@ public class SecurityConfig {
      * 2. Spring Security 설정을 위한 Security Config
      */
     // 추가된 jwt 관련 클래스들을 security config에 추가
-    private final JwtTokenProvider jwtTokenProvider;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtTokenFilter jwtTokenFilter;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -79,8 +78,7 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint);
 
         // jwt 적용
-        JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider);
-        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
