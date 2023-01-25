@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -18,12 +16,12 @@ public class OrderController {
     private final OrderService orderService;
     /**
      * @param items  여러건에 대한 상품 ID, 사이즈, 수량
-     * @param session  email
+     * @param email  email
      * @return
      */
     @PostMapping
-    public ResponseEntity<List<OrderRequestDTO>> orderProduct(@RequestBody @Valid List<OrderRequestDTO> items, HttpSession session) {
-        orderService.order(session.getAttribute("account").toString(), items);
+    public ResponseEntity<OrderRequestDTO> orderProduct(@Valid String email,@RequestBody List<OrderRequestDTO> items) {
+        orderService.order(email, items);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

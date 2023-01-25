@@ -58,6 +58,7 @@ public class OrderService {
             ProductOrdersDao productOrdersDao = ProductOrdersDao.builder()
                     .ordersId(orderDao.getOrderId())
                     .productId(items.get(i).getProductId())
+                    .ordersCount(items.get(i).getOrdersCount())
                     .createdBy(email)
                     .updatedBy(email)
                     .build();

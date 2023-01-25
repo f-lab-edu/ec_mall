@@ -1,7 +1,10 @@
 package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.MemberDao;
+import com.example.ec_mall.dao.MemberDao.UserDao;
 import com.example.ec_mall.dto.request.MemberRequestDTO;
+import com.example.ec_mall.dto.request.MemberRequestDTO.RequestDTO;
+import com.example.ec_mall.dto.request.MemberRequestDTO.LoginDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.mapper.MemberMapper;
@@ -10,6 +13,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.ec_mall.util.SHA256;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +22,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 
@@ -48,16 +57,16 @@ public class MemberServiceTest {
      */
     @InjectMocks
     MemberService memberService;
-    MemberRequestDTO.RequestDTO requestDTO;
-    MemberDao memberDao;
-    MemberRequestDTO.LoginDTO loginDTO;
+    RequestDTO requestDTO;
+    UserDao memberDao;
+    LoginDTO loginDTO;
 
     @Mock
     MemberMapper memberMapper;
 
     @BeforeEach
     void setUp(){
-        requestDTO = MemberRequestDTO.RequestDTO.builder()
+        requestDTO = RequestDTO.builder()
                 .email("est@test.com")
                 .nickName("test")
                 .password(SHA256.encrypt("testPassword1!"))
@@ -91,22 +100,22 @@ public class MemberServiceTest {
         verify(memberMapper, atLeastOnce()).emailCheck(requestDTO.getEmail());
     }
     @Test
-    @DisplayName("로그인 시도시 Mapper.findByEmailPassword 호출 검증")
+    @DisplayName("로그인 시도시 Mapper.findByEmail 호출 검증")
     void loginSuccess(){
-        loginDTO = MemberRequestDTO.LoginDTO.builder()
+        loginDTO = LoginDTO.builder()
                 .email("test@naver.com")
                 .password("Test1234!@#$")
                 .build();
 
-        memberDao = MemberDao.builder()
-                .id(1L)
+        memberDao = UserDao.builder()
+                .accountId(1L)
                 .email(loginDTO.getEmail())
                 .password(SHA256.encrypt(loginDTO.getPassword()))
                 .build();
 
-        when(memberMapper.findByEmailPassword(loginDTO.getEmail(), SHA256.encrypt(loginDTO.getPassword()))).thenReturn(memberDao);
-        memberService.login(loginDTO.getEmail(), loginDTO.getPassword());
-        verify(memberMapper, times(1)).findByEmailPassword(memberDao.getEmail(), memberDao.getPassword());
+        when(memberMapper.findByEmail(loginDTO.getEmail())).thenReturn(memberDao);
+        memberService.login(loginDTO);
+        verify(memberMapper, times(1)).findByEmail(memberDao.getEmail());
     }
 
     @Test

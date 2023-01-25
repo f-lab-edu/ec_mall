@@ -21,6 +21,17 @@ public class APIExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    @ExceptionHandler(JwtCustomException.class)
+    public ResponseEntity<Object> handleAPIException(JwtCustomException e){
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(e.getHttpStatus().value())
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> methodArgumentNotValidException(MethodArgumentNotValidException e){
         ErrorCode errorCode = ErrorCode.INVALID_INPUT_VALUE;

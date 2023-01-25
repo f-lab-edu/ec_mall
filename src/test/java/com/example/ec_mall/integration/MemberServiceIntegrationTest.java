@@ -5,7 +5,6 @@ import com.example.ec_mall.dto.request.MemberRequestDTO.RequestDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
 import com.example.ec_mall.service.MemberService;
-import com.example.ec_mall.util.SHA256;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class MemberServiceIntegrationTest {
         requestDTO = RequestDTO.builder()
                 .email("test11@test.com")
                 .nickName("test1")
-                .password(SHA256.encrypt("testPassword1!"))
+                .password("testPassword1!")
                 .build();
         memberService.signUpMember(requestDTO);
         assertThat(requestDTO).isNotNull();
@@ -39,7 +38,7 @@ public class MemberServiceIntegrationTest {
         requestDTO = RequestDTO.builder()
                 .email("test11@test.com")
                 .nickName("test12")
-                .password(SHA256.encrypt("passwordTest12"))
+                .password("passwordTest12")
                 .build();
         APIException exception = assertThrows(APIException.class, () -> memberService.signUpMember(requestDTO));
         assertThat(ErrorCode.ALREADY_SAVED_EMAIL).isEqualTo(exception.getErrorCode());
@@ -49,9 +48,9 @@ public class MemberServiceIntegrationTest {
     void loginSuccess(){
         loginDTO = LoginDTO.builder()
                 .email("test11@test.com")
-                .password(SHA256.encrypt("testPassword1!"))
+                .password("testPassword1!")
                 .build();
-        memberService.login(loginDTO.getEmail(), loginDTO.getPassword());
+        memberService.login(loginDTO);
         assertThat(loginDTO.getEmail()).isEqualTo("test11@test.com");
     }
     @Test
@@ -59,9 +58,9 @@ public class MemberServiceIntegrationTest {
     void loginFail(){
         loginDTO = LoginDTO.builder()
                 .email("test11@test.com")
-                .password(SHA256.encrypt("Test1234!@#$"))
+                .password("Test1234!@#$")
                 .build();
-        APIException exception = assertThrows(APIException.class, () -> memberService.login(loginDTO.getEmail(), loginDTO.getPassword()));
+        APIException exception = assertThrows(APIException.class, () -> memberService.login(loginDTO));
         assertThat(ErrorCode.NOT_FOUND_ACCOUNT).isEqualTo(exception.getErrorCode());
     }
 }
