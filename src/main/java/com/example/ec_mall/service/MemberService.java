@@ -7,7 +7,7 @@ import com.example.ec_mall.dto.request.MemberRequestDTO.LoginDTO;
 import com.example.ec_mall.dto.request.MemberRequestDTO.RequestDTO;
 import com.example.ec_mall.exception.APIException;
 import com.example.ec_mall.exception.ErrorCode;
-import com.example.ec_mall.jwt.JwtTokenProvider;
+import security.jwt.JwtTokenProvider;
 import com.example.ec_mall.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 
@@ -92,14 +92,20 @@ public class MemberService {
             log.error("Invalid Login");
             throw new APIException(ErrorCode.NOT_FOUND_ACCOUNT);
         }
+        /**
+         * Authentication에 정보를 저장하고 다른 로직에서 불러서 쓰는 마치 Session과 같은 밑의 방식은
+         * Spring Security에서 권장하는 정석적인 방법이다.
+         *
+         * 그러나 밑의 코드는 없어도 정상적으로 동작은 한다.
+         * JWT는 기본적으로 Stateless하다. 즉, 요청이 들어올 때마다 필터에서 확인해주는 방식이기 때문이다.
+         */
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getEmail(),
                         loginDTO.getPassword()
                 )
         );
-        SignInResponseDto signInResponseDto = jwtTokenProvider.generateToken(authentication);
 
-        return signInResponseDto;
+        return jwtTokenProvider.generateToken(authentication);
     }
 }

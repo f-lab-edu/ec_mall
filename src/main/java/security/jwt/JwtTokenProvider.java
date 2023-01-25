@@ -1,4 +1,4 @@
-package com.example.ec_mall.jwt;
+package security.jwt;
 
 import com.example.ec_mall.dto.response.SignInResponseDto;
 import com.example.ec_mall.exception.JwtCustomException;
@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final UserDetailsService userDetailsService;
+    private final MemberDetailsService memberDetailsService;
     @Value("${jwt.token.secret-key}")
     private String secretKey;
 
@@ -69,8 +68,8 @@ public class JwtTokenProvider {
             throw new JwtCustomException("권한 정보가 없습니다.", HttpStatus.UNAUTHORIZED);
         }
 
-        UserDetails memberDetailsService = userDetailsService.loadUserByUsername(claims.getSubject());
-        return new UsernamePasswordAuthenticationToken(memberDetailsService, "", memberDetailsService.getAuthorities());
+        UserDetails memberDetails = memberDetailsService.loadUserByUsername(claims.getSubject());
+        return new UsernamePasswordAuthenticationToken(memberDetailsService, "", memberDetails.getAuthorities());
     }
     /**
      * http 헤더로부터 bearer 토큰을 가져옴.
@@ -81,7 +80,7 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+            return bearerToken.substring(6).trim();
         }
         return null;
     }

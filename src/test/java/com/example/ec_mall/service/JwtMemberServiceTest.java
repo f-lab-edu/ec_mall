@@ -2,7 +2,7 @@ package com.example.ec_mall.service;
 
 import com.example.ec_mall.dao.MemberDao.UserDao;
 import com.example.ec_mall.dto.request.MemberRequestDTO.LoginDTO;
-import com.example.ec_mall.jwt.JwtTokenProvider;
+import security.jwt.JwtTokenProvider;
 import com.example.ec_mall.mapper.MemberMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package com.example.ec_mall.jwt;
+package security.jwt;
 
 import com.example.ec_mall.dao.MemberDao;
 import com.example.ec_mall.mapper.MemberMapper;
@@ -17,7 +17,7 @@ public class MemberDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         MemberDao.UserDao memberDao = memberMapper.findByEmail(email);
         return User.builder()
-                .username(memberDao.getUsername())
+                .username(String.valueOf(memberDao.getAccountId()))
                 .password(memberDao.getPassword())
                 .roles(memberDao.getRoles().toString())
                 .build();

@@ -1,4 +1,4 @@
-package com.example.ec_mall.jwt;
+package security.jwt;
 
 import com.example.ec_mall.exception.JwtCustomException;
 import lombok.RequiredArgsConstructor;

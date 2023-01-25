@@ -1,4 +1,4 @@
-package com.example.ec_mall.jwt;
+package security.jwt;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;

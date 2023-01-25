@@ -1,8 +1,8 @@
-package com.example.ec_mall.jwt.config;
+package security.config;
 
-import com.example.ec_mall.jwt.JwtAccessDeniedHandler;
-import com.example.ec_mall.jwt.JwtAuthenticationEntryPoint;
-import com.example.ec_mall.jwt.JwtTokenFilter;
+import security.jwt.JwtAccessDeniedHandler;
+import security.jwt.JwtAuthenticationEntryPoint;
+import security.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers(
                         "/",
+                        "/home/ecmall",
                         "/member/signUp",
                         "/member/signIn"
                 ).permitAll()
